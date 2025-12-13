@@ -22,6 +22,18 @@ export default [
     icon: 'HomeOutlined',
     component: './home',
   },
+  {
+    path: '/vehicle-trip',
+    name: '车辆行程',
+    icon: 'CarOutlined',
+    component: './vehicle-trip',
+  },
+  {
+    path: '/vehicle-track',
+    name: '车辆轨迹',
+    icon: 'CarOutlined',
+    component: './vehicle-track',
+  },
 
   // 404页面
   {

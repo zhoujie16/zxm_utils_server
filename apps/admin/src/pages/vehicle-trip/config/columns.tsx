@@ -1,0 +1,207 @@
+/**
+ * 车辆行程表格列配置
+ * 功能：定义表格列的结构和渲染逻辑
+ */
+import type { ColumnsType } from 'antd/es/table';
+import { formatTime } from '@/utils/format';
+import type { IVehicleTrip } from '@/types';
+
+/**
+ * 车辆行程表格列配置
+ */
+export const tripColumns: ColumnsType<IVehicleTrip> = [
+  {
+    title: '开始时间',
+    dataIndex: 'startTime',
+    key: 'startTime',
+    width: 180,
+    fixed: 'left',
+    render: (time: number) => formatTime(time),
+  },
+  {
+    title: '结束时间',
+    dataIndex: 'endTime',
+    key: 'endTime',
+    width: 180,
+    fixed: 'left',
+    render: (time: number) => formatTime(time),
+  },
+  {
+    title: '油耗（升）',
+    dataIndex: 'consumption',
+    key: 'consumption',
+    width: 120,
+    align: 'right',
+    render: (value: number) => (value / 1000).toFixed(2),
+  },
+  {
+    title: '里程（米）',
+    dataIndex: 'mileage',
+    key: 'mileage',
+    width: 120,
+    align: 'right',
+    render: (value: number) => value.toLocaleString(),
+  },
+  {
+    title: '平均速度（km/h）',
+    dataIndex: 'velocity',
+    key: 'velocity',
+    width: 140,
+    align: 'right',
+  },
+  {
+    title: '最大速度（km/h）',
+    dataIndex: 'maxSpeed',
+    key: 'maxSpeed',
+    width: 140,
+    align: 'right',
+  },
+  {
+    title: '急加速',
+    dataIndex: 'sharpAcceleration',
+    key: 'sharpAcceleration',
+    width: 100,
+    align: 'center',
+  },
+  {
+    title: '急减速',
+    dataIndex: 'sharpDeceleration',
+    key: 'sharpDeceleration',
+    width: 100,
+    align: 'center',
+  },
+  {
+    title: '急转弯',
+    dataIndex: 'sharpTurn',
+    key: 'sharpTurn',
+    width: 100,
+    align: 'center',
+  },
+  // Raw 原始数据字段（放在最后）
+  {
+    title: '开始时间(raw)',
+    dataIndex: 'raw_start_time',
+    key: 'raw_start_time',
+    width: 180,
+    render: (time: number) => time ? formatTime(time) : '-',
+  },
+  {
+    title: '结束时间(raw)',
+    dataIndex: 'raw_end_time',
+    key: 'raw_end_time',
+    width: 180,
+    render: (time: number) => time ? formatTime(time) : '-',
+  },
+  {
+    title: '平均油耗（毫升）(raw)',
+    dataIndex: 'raw_te_record_trip_avg_oil',
+    key: 'raw_te_record_trip_avg_oil',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '平均转速（rpm）(raw)',
+    dataIndex: 'raw_te_record_trip_avg_rpm',
+    key: 'raw_te_record_trip_avg_rpm',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '平均速度（km/h）(raw)',
+    dataIndex: 'raw_te_record_trip_avg_speed',
+    key: 'raw_te_record_trip_avg_speed',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '最大转速（rpm）(raw)',
+    dataIndex: 'raw_te_record_trip_max_rpm',
+    key: 'raw_te_record_trip_max_rpm',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '最大速度（km/h）(raw)',
+    dataIndex: 'raw_te_record_trip_max_speed',
+    key: 'raw_te_record_trip_max_speed',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '里程（米）(raw)',
+    dataIndex: 'raw_te_record_trip_mileage',
+    key: 'raw_te_record_trip_mileage',
+    width: 130,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '单位ID(raw)',
+    dataIndex: 'raw_te_record_trip_no',
+    key: 'raw_te_record_trip_no',
+    width: 120,
+    align: 'right',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '油耗（毫升）(raw)',
+    dataIndex: 'raw_te_record_trip_oil',
+    key: 'raw_te_record_trip_oil',
+    width: 130,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '运行时间（秒）(raw)',
+    dataIndex: 'raw_te_record_trip_run_time',
+    key: 'raw_te_record_trip_run_time',
+    width: 150,
+    align: 'right',
+    render: (value: number) => value ? value.toLocaleString() : '-',
+  },
+  {
+    title: '行程开始时间(raw)',
+    dataIndex: 'raw_te_record_trip_start_time',
+    key: 'raw_te_record_trip_start_time',
+    width: 180,
+    render: (time: number) => time ? formatTime(time) : '-',
+  },
+  {
+    title: '行程类型(raw)',
+    dataIndex: 'raw_te_record_trip_type',
+    key: 'raw_te_record_trip_type',
+    width: 120,
+    align: 'center',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '急加速次数(raw)',
+    dataIndex: 'raw_te_record_trip_urgent_acc_cnt',
+    key: 'raw_te_record_trip_urgent_acc_cnt',
+    width: 150,
+    align: 'center',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '急减速次数(raw)',
+    dataIndex: 'raw_te_record_trip_urgent_dec_cnt',
+    key: 'raw_te_record_trip_urgent_dec_cnt',
+    width: 150,
+    align: 'center',
+    render: (value: number) => value ?? '-',
+  },
+  {
+    title: '急转弯次数(raw)',
+    dataIndex: 'raw_te_record_trip_urgent_turn_cnt',
+    key: 'raw_te_record_trip_urgent_turn_cnt',
+    width: 150,
+    align: 'center',
+    render: (value: number) => value ?? '-',
+  },
+];
+

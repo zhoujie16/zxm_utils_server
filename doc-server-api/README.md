@@ -8,6 +8,9 @@
 
 - [登录认证模块](./login/) - 用户登录、JWT 认证
   - [用户登录](./login/login.md) - `POST /api/auth/login`
+- [车辆行程模块](./vehicle-trip/) - 车辆行程数据管理
+  - [查询车辆行程数据列表](./vehicle-trip/list.md) - `GET /api/vehicle-trip`
+  - [同步车辆行程数据](./vehicle-trip/sync.md) - `POST /api/vehicle-trip/sync`
 
 ## 🔗 基础信息
 

@@ -8,9 +8,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DemoModule } from './modules/demo/demo.module';
 import { LoginModule } from './modules/login/login.module';
+import { VehicleTripModule } from './modules/vehicle-trip/vehicle-trip.module';
+import { VehicleTrackModule } from './modules/vehicle-track/vehicle-track.module';
 import { AuthModule } from './common/auth/auth.module';
 import { databaseConfig } from './config/database.config';
 import { Demo } from './modules/demo/demo.entity';
+import { VehicleTrip } from './modules/vehicle-trip/vehicle-trip.entity';
 
 @Module({
   imports: [
@@ -19,12 +22,14 @@ import { Demo } from './modules/demo/demo.entity';
       database: databaseConfig.database,
       synchronize: databaseConfig.synchronize,
       logging: databaseConfig.logging,
-      entities: [Demo],
+      entities: [Demo, VehicleTrip],
       autoLoadEntities: true,
     }),
     AuthModule,
     DemoModule,
     LoginModule,
+    VehicleTripModule,
+    VehicleTrackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
