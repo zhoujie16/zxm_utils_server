@@ -1,0 +1,92 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Production
+dist/
+build/
+*.tsbuildinfo
+
+# Misc
+.DS_Store
+*.pem
+*.log
+*.lock
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# UmiJS (前端)
+.umi/
+.umi-production/
+.umi-test/
+.mfsu/
+.swc/
+
+# NestJS (后端)
+*.js.map
+*.d.ts.map
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# Temporary files
+.tmp/
+.temp/
+*.tmp
+*.temp
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+.DS_Store

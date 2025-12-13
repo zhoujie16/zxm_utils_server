@@ -1,0 +1,22 @@
+{
+  "name": "zxm-admin-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo 项目，使用 Yarn Workspaces 管理",
+  "workspaces": [
+    "apps/*"
+  ],
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "dev:admin": "yarn workspace admin dev",
+    "dev:server": "yarn workspace server start:dev",
+    "admin:build": "yarn workspace admin build",
+    "server:build": "yarn workspace server build",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "install:all": "yarn install"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}
+
