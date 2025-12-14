@@ -29,10 +29,22 @@ export default [
     component: './vehicle-trip',
   },
   {
+    path: '/vehicle-trip-sync',
+    name: '车辆行程同步',
+    icon: 'SyncOutlined',
+    component: './vehicle-trip-sync',
+  },
+  {
     path: '/vehicle-track',
     name: '车辆轨迹',
     icon: 'CarOutlined',
     component: './vehicle-track',
+  },
+  {
+    path: '/vehicle-track-sync',
+    name: '车辆轨迹同步',
+    icon: 'SyncOutlined',
+    component: './vehicle-track-sync',
   },
 
   // 404页面

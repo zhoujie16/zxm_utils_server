@@ -3,14 +3,14 @@
  * 功能：展示车辆行程数据列表，支持分页和时间范围筛选
  */
 import React from 'react';
-import { Table, Card, DatePicker, Space, Button } from 'antd';
+import { Card, DatePicker, Space, Button, Pagination, Spin, Empty } from 'antd';
 import { ReloadOutlined, SyncOutlined } from '@ant-design/icons';
-import { DEFAULT_PAGINATION, TABLE_SIZE } from '@/constants/table';
+import { DEFAULT_PAGINATION } from '@/constants/table';
 import type { IVehicleTrip } from '@/types';
 import PresetDateRangePicker from '@/components/PresetDateRangePicker';
 import { useTripList } from './hooks/useTripList';
 import { useSyncTrip } from './hooks/useSyncTrip';
-import { tripColumns } from './config/columns';
+import TripCard from './components/TripCard';
 
 const VehicleTripPage: React.FC = () => {
   // 使用自定义 Hook 管理数据逻辑
@@ -35,10 +35,13 @@ const VehicleTripPage: React.FC = () => {
   } = useSyncTrip(refresh);
 
   // 处理分页变化
-  const handleTableChange = (newPage: number, newPageSize: number) => {
+  const handlePageChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
     setLimit(newPageSize);
   };
+
+  const tripList = data?.data || [];
+  const total = data?.pagination?.total || 0;
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -86,24 +89,34 @@ const VehicleTripPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* 表格区域 */}
+      {/* 卡片列表区域 */}
       <Card>
-        <Table<IVehicleTrip>
-          rowKey="id"
-          columns={tripColumns}
-          dataSource={data?.data || []}
-          loading={isLoading || isSyncing}
-          size={TABLE_SIZE}
-          scroll={{ x: 4000 }}
-          pagination={{
-            ...DEFAULT_PAGINATION,
-            current: page,
-            pageSize: limit,
-            total: data?.pagination?.total || 0,
-            onChange: handleTableChange,
-            onShowSizeChange: handleTableChange,
-          }}
-        />
+        <Spin spinning={isLoading || isSyncing}>
+          {tripList.length > 0 ? (
+            <>
+              <div>
+                {tripList.map((trip: IVehicleTrip) => (
+                  <TripCard key={trip.id} trip={trip} />
+                ))}
+              </div>
+              <div style={{ marginTop: 24, textAlign: 'right' }}>
+                <Pagination
+                  current={page}
+                  pageSize={limit}
+                  total={total}
+                  showSizeChanger
+                  showQuickJumper
+                  showTotal={(total) => `共 ${total} 条`}
+                  pageSizeOptions={DEFAULT_PAGINATION.pageSizeOptions}
+                  onChange={handlePageChange}
+                  onShowSizeChange={handlePageChange}
+                />
+              </div>
+            </>
+          ) : (
+            <Empty description="暂无数据" />
+          )}
+        </Spin>
       </Card>
     </Space>
   );

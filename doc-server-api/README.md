@@ -11,6 +11,9 @@
 - [车辆行程模块](./vehicle-trip/) - 车辆行程数据管理
   - [查询车辆行程数据列表](./vehicle-trip/list.md) - `GET /api/vehicle-trip`
   - [同步车辆行程数据](./vehicle-trip/sync.md) - `POST /api/vehicle-trip/sync`
+- [车辆轨迹模块](./vehicle-track/) - 车辆轨迹数据管理
+  - [查询车辆轨迹数据列表](./vehicle-track/list.md) - `GET /api/vehicle-track`
+  - [同步车辆轨迹数据](./vehicle-track/sync.md) - `POST /api/vehicle-track/sync`
 
 ## 🔗 基础信息
 

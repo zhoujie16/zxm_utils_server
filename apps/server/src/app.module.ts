@@ -14,6 +14,7 @@ import { AuthModule } from './common/auth/auth.module';
 import { databaseConfig } from './config/database.config';
 import { Demo } from './modules/demo/demo.entity';
 import { VehicleTrip } from './modules/vehicle-trip/vehicle-trip.entity';
+import { VehicleTrack } from './modules/vehicle-track/vehicle-track.entity';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { VehicleTrip } from './modules/vehicle-trip/vehicle-trip.entity';
       database: databaseConfig.database,
       synchronize: databaseConfig.synchronize,
       logging: databaseConfig.logging,
-      entities: [Demo, VehicleTrip],
+      entities: [Demo, VehicleTrip, VehicleTrack],
       autoLoadEntities: true,
     }),
     AuthModule,

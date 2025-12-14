@@ -116,7 +116,7 @@ export class VehicleTrip {
   @Column({ type: 'bigint' })
   raw_end_time: number;
 
-  @ApiProperty({ description: '原始平均油耗（毫升）', example: 61 })
+  @ApiProperty({ description: '原始平均油耗（毫升/km）', example: 61 })
   @Column({ type: 'integer' })
   raw_te_record_trip_avg_oil: number;
 

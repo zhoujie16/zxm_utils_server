@@ -216,3 +216,82 @@ export interface ISyncTripResponse {
   /** 同步结果消息 */
   message: string;
 }
+
+// ==================== 车辆轨迹相关类型 ====================
+
+/**
+ * 车辆轨迹数据实体类型
+ */
+export interface IVehicleTrack {
+  /** ID */
+  id: number;
+  /** 设备IMEI */
+  imei: string;
+  /** 方向（度） */
+  direction: number;
+  /** 门时间（13位时间戳，毫秒） */
+  gateTime: number;
+  /** GPS模式 */
+  gpsMode: number;
+  /** GPS速度（km/h） */
+  gpsSpeed: number;
+  /** GPS时间（13位时间戳，毫秒） */
+  gpsTime: number;
+  /** 纬度 */
+  lat: number;
+  /** 经度 */
+  lng: number;
+  /** 定位方法 */
+  posMethod: number;
+  /** 定位多重标志 */
+  posMulFlag: number;
+  /** 定位类型 */
+  posType: number;
+  /** 精度 */
+  precision: number;
+  /** 创建时间 */
+  createdAt: string;
+  /** 更新时间 */
+  updatedAt: string;
+}
+
+/**
+ * 查询车辆轨迹参数类型
+ */
+export interface IQueryTrackParams {
+  /** 页码 */
+  page?: number;
+  /** 每页数量 */
+  limit?: number;
+  /** 开始时间（时间戳，毫秒） */
+  startTime?: number;
+  /** 结束时间（时间戳，毫秒） */
+  endTime?: number;
+}
+
+/**
+ * 车辆轨迹列表响应类型
+ */
+export type ITrackListResponse = IApiListResponse<IVehicleTrack>;
+
+/**
+ * 同步车辆轨迹数据请求参数类型
+ */
+export interface ISyncTrackParams {
+  /** 开始时间（格式：YYYY-MM-DD HH:mm:ss） */
+  startTime: string;
+  /** 结束时间（格式：YYYY-MM-DD HH:mm:ss） */
+  endTime: string;
+}
+
+/**
+ * 同步车辆轨迹数据响应类型
+ */
+export interface ISyncTrackResponse {
+  /** 成功保存的记录数 */
+  success: number;
+  /** 失败的记录数 */
+  failed: number;
+  /** 同步结果消息 */
+  message: string;
+}
