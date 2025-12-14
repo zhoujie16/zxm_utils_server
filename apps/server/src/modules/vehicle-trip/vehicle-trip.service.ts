@@ -9,17 +9,30 @@ import axios, { AxiosInstance } from 'axios';
 import { VehicleTrip } from './vehicle-trip.entity';
 import { SyncTripDto } from './dto/sync-trip.dto';
 import { QueryTripDto } from './dto/query-trip.dto';
+import { CommonConfigService } from '../common-config/common-config.service';
 
 @Injectable()
 export class VehicleTripService {
-  private readonly httpClient: AxiosInstance;
-
   constructor(
     @InjectRepository(VehicleTrip)
     private readonly vehicleTripRepository: Repository<VehicleTrip>,
-  ) {
-    // 初始化 HTTP 客户端，配置固定请求头
-    this.httpClient = axios.create({
+    private readonly commonConfigService: CommonConfigService,
+  ) {}
+
+  /**
+   * 获取 HTTP 客户端实例（动态读取配置中的 token）
+   */
+  private async getHttpClient(): Promise<AxiosInstance> {
+    // 从配置表读取 token
+    const config = await this.commonConfigService.findByKey('WanCheBaoToken');
+    if (!config) {
+      throw new HttpException('万车宝 Token 配置不存在', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    if (!config.isEnabled) {
+      throw new HttpException('万车宝 Token 配置未启用', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return axios.create({
       baseURL: 'https://online.wanchebao.com',
       headers: {
         'Host': 'online.wanchebao.com',
@@ -31,7 +44,7 @@ export class VehicleTripService {
         'mobileBrand': 'iPhone',
         'Accept-Language': 'zh-Hans-CN;q=1, en-CN;q=0.9',
         'osVer': '18.6.2',
-        'token': 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2tleSI6IjE4NTkxOTI4ODM0NTkwMDIzNjgiLCJsb2dpbl9hdCI6MTc1ODQ2OTE1MzM3MiwidXNlcl90eXBlIjoiRU5EX1VTRVIiLCJ1c2VyX2lkIjoiMTg1OTE5Mjg4MzQ1OTAwMjM2OCJ9.B0dc8uQkrlA419Wj-3u3fwEaHf3QkI1qp8GZerXmvdGFQUCKG09UZrkHuskpyCdhBiPE76336rLYRPQhNn8doQ',
+        'token': config.configValue,
         'User-Agent': 'Advancer AD10/3.0.5 (iPhone; iOS 18.6.2; Scale/3.00)',
         'lang': 'CN',
         'Content-Type': 'application/json',
@@ -51,7 +64,8 @@ export class VehicleTripService {
 
     try {
       // 调用外部API获取数据
-      const response = await this.httpClient.get('/v2/driveRecord/section', {
+      const httpClient = await this.getHttpClient();
+      const response = await httpClient.get('/v2/driveRecord/section', {
         params: {
           vehicleId: 2032011,
           page: 1,

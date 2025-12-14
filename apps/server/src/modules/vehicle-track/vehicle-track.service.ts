@@ -10,32 +10,48 @@ import dayjs from 'dayjs';
 import { VehicleTrack } from './vehicle-track.entity';
 import { SyncTrackDto } from './dto/sync-track.dto';
 import { QueryTrackDto } from './dto/query-track.dto';
+import { CommonConfigService } from '../common-config/common-config.service';
 
 @Injectable()
 export class VehicleTrackService {
-  private readonly httpClient: AxiosInstance;
-
   constructor(
     @InjectRepository(VehicleTrack)
     private readonly vehicleTrackRepository: Repository<VehicleTrack>,
-  ) {
-      // 初始化 HTTP 客户端，配置固定请求头
-      this.httpClient = axios.create({
-        baseURL: 'http://tuqiang123.com',
-        headers: {
-          'Accept': 'application/json, text/javascript, */*; q=0.01',
-          'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-          'Connection': 'keep-alive',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Origin': 'http://tuqiang123.com',
-          'Referer': 'http://tuqiang123.com/trackreplay/locus?imei=868120325700570&hrefType=1',
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
-          'X-Requested-With': 'XMLHttpRequest',
-          'Cookie': 'checkChildAlarm=0; SHAREJSESSIONID=ec6a605e-a900-48e4-bb6d-ccc115e5f108',
-        },
-        // 允许不安全的 HTTPS 连接（如果需要）
-        validateStatus: () => true,
-      });
+    private readonly commonConfigService: CommonConfigService,
+  ) {}
+
+  /**
+   * 获取 HTTP 客户端实例（动态读取配置中的 token）
+   */
+  private async getHttpClient(): Promise<AxiosInstance> {
+    // 从配置表读取 token
+    const config = await this.commonConfigService.findByKey('TuQiangToken');
+    if (!config) {
+      throw new HttpException('途强 Token 配置不存在', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    if (!config.isEnabled) {
+      throw new HttpException('途强 Token 配置未启用', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 构建 Cookie 字符串，更新 SHAREJSESSIONID
+    const cookie = `checkChildAlarm=0; SHAREJSESSIONID=${config.configValue}`;
+
+    return axios.create({
+      baseURL: 'http://tuqiang123.com',
+      headers: {
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Origin': 'http://tuqiang123.com',
+        'Referer': 'http://tuqiang123.com/trackreplay/locus?imei=868120325700570&hrefType=1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Cookie': cookie,
+      },
+      // 允许不安全的 HTTPS 连接（如果需要）
+      validateStatus: () => true,
+    });
   }
 
   /**
@@ -69,10 +85,11 @@ export class VehicleTrackService {
         filter: 'false',
       });
       console.log('请求Body (URLSearchParams):', requestBody);
-      console.log('请求Headers:', this.httpClient.defaults.headers);
 
       // 调用外部API获取数据
-      const response = await this.httpClient.post('/trackreplay/initPiont', requestBody);
+      const httpClient = await this.getHttpClient();
+      console.log('请求Headers:', httpClient.defaults.headers);
+      const response = await httpClient.post('/trackreplay/initPiont', requestBody);
 
       console.log('========== 外部API响应 ==========');
       console.log('响应状态码:', response.status);
