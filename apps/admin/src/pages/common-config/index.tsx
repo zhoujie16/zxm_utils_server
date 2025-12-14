@@ -20,14 +20,10 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  DragOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
 } from '@ant-design/icons';
 import type { ICommonConfig } from '@/types';
-import { getConfigList, createConfig, updateConfig, deleteConfig, updateSortOrder } from '@/services/common-config';
+import { getConfigList, createConfig, updateConfig, deleteConfig } from '@/services/common-config';
 import { formatTime } from '@/utils/format';
-import DragModal from './components/DragModal';
 
 const { TextArea } = Input;
 
@@ -102,61 +98,9 @@ const CommonConfigPage: React.FC = () => {
     setModalVisible(true);
   };
 
-  // 处理移动（上移/下移）
-  const handleMove = async (index: number, direction: 'up' | 'down') => {
-    const newList = [...configList];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-
-    if (targetIndex < 0 || targetIndex >= newList.length) {
-      return;
-    }
-
-    // 交换位置
-    [newList[index], newList[targetIndex]] = [newList[targetIndex], newList[index]];
-
-    // 更新排序值
-    const updates = newList.map((item, idx) => ({
-      id: item.id,
-      sortOrder: idx,
-    }));
-
-    try {
-      await updateSortOrder({ updates });
-      message.success('排序更新成功');
-      setConfigList(newList);
-    } catch (error) {
-      message.error('排序更新失败');
-      loadData(); // 失败时重新加载
-    }
-  };
-
+  
   // 表格列定义
   const columns = [
-    {
-      title: '排序',
-      dataIndex: 'sortOrder',
-      key: 'sortOrder',
-      width: 80,
-      align: 'center' as const,
-      render: (_: any, __: any, index: number) => (
-        <Space size={4} direction="vertical">
-          <Button
-            type="text"
-            size="small"
-            icon={<ArrowUpOutlined />}
-            disabled={index === 0}
-            onClick={() => handleMove(index, 'up')}
-          />
-          <Button
-            type="text"
-            size="small"
-            icon={<ArrowDownOutlined />}
-            disabled={index === configList.length - 1}
-            onClick={() => handleMove(index, 'down')}
-          />
-        </Space>
-      ),
-    },
     {
       title: '配置键',
       dataIndex: 'configKey',
@@ -257,9 +201,6 @@ const CommonConfigPage: React.FC = () => {
             }}
           >
             新增配置
-          </Button>
-          <Button icon={<DragOutlined />} disabled>
-            拖拽排序
           </Button>
         </Space>
 

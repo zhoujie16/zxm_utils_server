@@ -7,7 +7,6 @@ import type {
   ICommonConfig,
   ICreateConfigParams,
   IUpdateConfigParams,
-  IUpdateSortParams,
 } from '@/types';
 
 const BASE_URL = '/api/common-config';
@@ -21,23 +20,6 @@ export async function getConfigList(): Promise<ICommonConfig[]> {
   });
 }
 
-/**
- * 根据ID获取公共配置
- */
-export async function getConfigById(id: number): Promise<ICommonConfig> {
-  return request(`${BASE_URL}/${id}`, {
-    method: 'GET',
-  });
-}
-
-/**
- * 根据配置键获取公共配置
- */
-export async function getConfigByKey(configKey: string): Promise<ICommonConfig | null> {
-  return request(`${BASE_URL}/key/${configKey}`, {
-    method: 'GET',
-  });
-}
 
 /**
  * 创建新的公共配置
@@ -62,24 +44,7 @@ export async function updateConfig(
   });
 }
 
-/**
- * 切换配置启用状态
- */
-export async function toggleConfigEnabled(id: number): Promise<ICommonConfig> {
-  return request(`${BASE_URL}/${id}/toggle`, {
-    method: 'PATCH',
-  });
-}
 
-/**
- * 批量更新排序
- */
-export async function updateSortOrder(params: IUpdateSortParams): Promise<{ success: boolean; message: string }> {
-  return request(`${BASE_URL}/sort`, {
-    method: 'POST',
-    data: params,
-  });
-}
 
 /**
  * 删除公共配置

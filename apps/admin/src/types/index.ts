@@ -314,9 +314,9 @@ export interface ICommonConfig {
   sortOrder: number;
   /** 是否启用 */
   isEnabled: boolean;
-  /** 创建时间 */
+  /** 创建时间（ISO 8601 格式） */
   createdAt: string;
-  /** 更新时间 */
+  /** 更新时间（ISO 8601 格式） */
   updatedAt: string;
 }
 
@@ -352,12 +352,3 @@ export interface IUpdateConfigParams {
   isEnabled?: boolean;
 }
 
-/**
- * 更新排序参数类型
- */
-export interface IUpdateSortParams {
-  updates: {
-    id: number;
-    sortOrder: number;
-  }[];
-}

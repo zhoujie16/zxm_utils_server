@@ -11,8 +11,6 @@
 | 根据配置键获取配置 | GET | /api/common-config/key/:configKey | 根据配置键获取配置项 |
 | 创建新配置 | POST | /api/common-config | 创建一个新的配置项 |
 | 更新配置 | PATCH | /api/common-config/:id | 更新指定ID的配置项 |
-| 切换启用状态 | PATCH | /api/common-config/:id/toggle | 切换配置项的启用/禁用状态 |
-| 批量更新排序 | POST | /api/common-config/sort | 批量更新配置项的排序顺序 |
 | 删除配置 | DELETE | /api/common-config/:id | 删除指定ID的配置项 |
 
 ## 数据模型

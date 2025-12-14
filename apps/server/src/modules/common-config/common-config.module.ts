@@ -14,4 +14,4 @@ import { CommonConfig } from './common-config.entity';
   providers: [CommonConfigService],
   exports: [CommonConfigService],
 })
-export class CommonModule {}
+export class CommonConfigModule {}

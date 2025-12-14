@@ -15,7 +15,7 @@ import { databaseConfig } from './config/database.config';
 import { Demo } from './modules/demo/demo.entity';
 import { VehicleTrip } from './modules/vehicle-trip/vehicle-trip.entity';
 import { VehicleTrack } from './modules/vehicle-track/vehicle-track.entity';
-import { CommonModule } from './modules/common-config/common-config.module';
+import { CommonConfigModule } from './modules/common-config/common-config.module';
 import { CommonConfig } from './modules/common-config/common-config.entity';
 
 @Module({
@@ -33,7 +33,7 @@ import { CommonConfig } from './modules/common-config/common-config.entity';
     LoginModule,
     VehicleTripModule,
     VehicleTrackModule,
-    CommonModule,
+    CommonConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

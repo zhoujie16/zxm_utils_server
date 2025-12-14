@@ -91,28 +91,4 @@ export class CommonConfigService {
     const config = await this.findOne(id);
     await this.commonConfigRepository.remove(config);
   }
-
-  /**
-   * 切换配置启用状态
-   */
-  async toggleEnabled(id: number): Promise<CommonConfig> {
-    const config = await this.findOne(id);
-    config.isEnabled = !config.isEnabled;
-    return await this.commonConfigRepository.save(config);
-  }
-
-  /**
-   * 批量更新排序
-   */
-  async updateSortOrder(updates: { id: number; sortOrder: number }[]): Promise<void> {
-    await this.commonConfigRepository.manager.transaction(async (transactionManager) => {
-      for (const update of updates) {
-        await transactionManager.update(
-          CommonConfig,
-          { id: update.id },
-          { sortOrder: update.sortOrder }
-        );
-      }
-    });
-  }
 }
