@@ -295,3 +295,69 @@ export interface ISyncTrackResponse {
   /** 同步结果消息 */
   message: string;
 }
+
+// ==================== 公共配置相关类型 ====================
+
+/**
+ * 公共配置数据实体类型
+ */
+export interface ICommonConfig {
+  /** ID */
+  id: number;
+  /** 配置键（唯一标识） */
+  configKey: string;
+  /** 配置值，一般为JSON字符串 */
+  configValue?: string;
+  /** 配置描述 */
+  description?: string;
+  /** 排序顺序 */
+  sortOrder: number;
+  /** 是否启用 */
+  isEnabled: boolean;
+  /** 创建时间 */
+  createdAt: string;
+  /** 更新时间 */
+  updatedAt: string;
+}
+
+/**
+ * 创建公共配置参数类型
+ */
+export interface ICreateConfigParams {
+  /** 配置键（唯一标识） */
+  configKey: string;
+  /** 配置值，一般为JSON字符串 */
+  configValue?: string;
+  /** 配置描述 */
+  description?: string;
+  /** 排序顺序 */
+  sortOrder?: number;
+  /** 是否启用 */
+  isEnabled?: boolean;
+}
+
+/**
+ * 更新公共配置参数类型
+ */
+export interface IUpdateConfigParams {
+  /** 配置键（唯一标识） */
+  configKey?: string;
+  /** 配置值，一般为JSON字符串 */
+  configValue?: string;
+  /** 配置描述 */
+  description?: string;
+  /** 排序顺序 */
+  sortOrder?: number;
+  /** 是否启用 */
+  isEnabled?: boolean;
+}
+
+/**
+ * 更新排序参数类型
+ */
+export interface IUpdateSortParams {
+  updates: {
+    id: number;
+    sortOrder: number;
+  }[];
+}

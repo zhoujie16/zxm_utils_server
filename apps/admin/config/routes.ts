@@ -23,6 +23,12 @@ export default [
     component: './home',
   },
   {
+    path: '/common-config',
+    name: '公共配置',
+    icon: 'SettingOutlined',
+    component: './common-config',
+  },
+  {
     path: '/vehicle-trip',
     name: '车辆行程',
     icon: 'CarOutlined',

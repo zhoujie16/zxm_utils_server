@@ -8,6 +8,15 @@
 
 - [登录认证模块](./login/) - 用户登录、JWT 认证
   - [用户登录](./login/login.md) - `POST /api/auth/login`
+- [公共配置模块](./common-config/) - 系统配置管理
+  - [获取所有配置](./common-config/list.md) - `GET /api/common-config`
+  - [根据ID获取配置](./common-config/get.md) - `GET /api/common-config/:id`
+  - [根据配置键获取配置](./common-config/get-by-key.md) - `GET /api/common-config/key/:configKey`
+  - [创建新配置](./common-config/create.md) - `POST /api/common-config`
+  - [更新配置](./common-config/update.md) - `PATCH /api/common-config/:id`
+  - [切换启用状态](./common-config/toggle.md) - `PATCH /api/common-config/:id/toggle`
+  - [批量更新排序](./common-config/sort.md) - `POST /api/common-config/sort`
+  - [删除配置](./common-config/delete.md) - `DELETE /api/common-config/:id`
 - [车辆行程模块](./vehicle-trip/) - 车辆行程数据管理
   - [查询车辆行程数据列表](./vehicle-trip/list.md) - `GET /api/vehicle-trip`
   - [同步车辆行程数据](./vehicle-trip/sync.md) - `POST /api/vehicle-trip/sync`
@@ -17,7 +26,7 @@
 
 ## 🔗 基础信息
 
-- **基础URL**: `http://localhost:8010/api`
+- **基础URL**: `http://localhost:7031/api`
 - **Content-Type**: `application/json`
 - **认证方式**: Bearer Token (需要认证的接口)
 
