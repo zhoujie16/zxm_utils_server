@@ -1,3 +1,4 @@
+// 文件说明: UmiJS 配置文件, 定义管理端构建与运行参数
 // https://umijs.org/config/
 
 import { join } from 'node:path';
@@ -11,7 +12,7 @@ import routes from './routes';
  * @description 部署时的路径，如果部署在非根目录下，需要配置这个变量
  * @doc https://umijs.org/docs/api/config#publicpath
  */
-const PUBLIC_PATH: string = '/';
+const PUBLIC_PATH: string = '/zxm-toolkit-admin/';
 
 export default defineConfig({
   /**
