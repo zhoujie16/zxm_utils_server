@@ -25,6 +25,7 @@ build/
 *.pem
 *.log
 *.lock
+!yarn.lock
 
 # Debug
 npm-debug.log*
