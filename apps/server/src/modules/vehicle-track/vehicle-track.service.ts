@@ -74,53 +74,11 @@ export class VehicleTrackService {
       const requestUrl = 'http://tuqiang123.com/trackreplay/initPiont';
       const requestBody = params.toString();
 
-      console.log('========== 轨迹同步请求开始 ==========');
-      console.log('请求URL:', requestUrl);
-      console.log('请求参数:', {
-        startTime,
-        endTime,
-        imei: '868120325700570',
-        selectMap: 'baiduMap',
-        selectType: 'gps,lbs,wifi,inertia',
-        filter: 'false',
-      });
-      console.log('请求Body (URLSearchParams):', requestBody);
-
       // 调用外部API获取数据
       const httpClient = await this.getHttpClient();
-      console.log('请求Headers:', httpClient.defaults.headers);
       const response = await httpClient.post('/trackreplay/initPiont', requestBody);
 
-      console.log('========== 外部API响应 ==========');
-      console.log('响应状态码:', response.status);
-      console.log('响应状态文本:', response.statusText);
-      console.log('响应Headers:', JSON.stringify(response.headers, null, 2));
-      console.log('响应数据类型:', typeof response.data);
-      console.log('响应数据是否为对象:', typeof response.data === 'object');
-      console.log('响应数据 keys:', response.data ? Object.keys(response.data) : 'null/undefined');
-      console.log('响应数据 (完整 - JSON.stringify):', JSON.stringify(response.data, null, 2));
-      console.log('响应数据 (完整 - 直接输出):', response.data);
-      console.log('响应 data.code:', response.data?.code);
-      console.log('响应 data.ok:', response.data?.ok);
-      console.log('响应 data.msg:', response.data?.msg);
-      console.log('响应 data.data 是否存在:', !!response.data?.data);
-      console.log('响应 data.data 类型:', typeof response.data?.data);
-      if (response.data?.data) {
-        console.log('响应 data.data keys:', Object.keys(response.data.data));
-        console.log('响应 data.data (完整):', JSON.stringify(response.data.data, null, 2));
-        console.log('响应 data.data.data 是否存在:', !!response.data.data?.data);
-        console.log('响应 data.data.data 类型:', typeof response.data.data?.data);
-        if (Array.isArray(response.data.data?.data)) {
-          console.log('响应 data.data.data 数组长度:', response.data.data.data.length);
-        }
-      }
-
       if (response.data.code !== 0 || !response.data.ok) {
-        console.error('========== 外部API返回错误 ==========');
-        console.error('错误代码:', response.data?.code);
-        console.error('错误状态:', response.data?.ok);
-        console.error('错误消息:', response.data?.msg);
-        console.error('完整响应数据:', JSON.stringify(response.data, null, 2));
         throw new HttpException(
           `外部API返回错误: ${response.data.msg || '未知错误'}`,
           HttpStatus.BAD_GATEWAY,
@@ -128,11 +86,6 @@ export class VehicleTrackService {
       }
 
       const trackDataList = response.data.data?.data || [];
-      console.log('========== 解析轨迹数据 ==========');
-      console.log('轨迹数据条数:', trackDataList.length);
-      if (trackDataList.length > 0) {
-        console.log('第一条数据示例:', JSON.stringify(trackDataList[0], null, 2));
-      }
 
       let successCount = 0;
       let failedCount = 0;
@@ -148,30 +101,12 @@ export class VehicleTrackService {
         }
       }
 
-      console.log('========== 同步完成 ==========');
-      console.log('成功:', successCount, '条');
-      console.log('失败:', failedCount, '条');
-
       return {
         success: successCount,
         failed: failedCount,
         message: `同步完成：成功 ${successCount} 条，失败 ${failedCount} 条`,
       };
     } catch (error) {
-      console.error('========== 同步异常 ==========');
-      console.error('错误类型:', error?.constructor?.name);
-      console.error('错误消息:', error?.message);
-      console.error('错误堆栈:', error?.stack);
-      if (error?.response) {
-        console.error('HTTP响应状态码:', error.response.status);
-        console.error('HTTP响应状态文本:', error.response.statusText);
-        console.error('HTTP响应Headers:', error.response.headers);
-        console.error('HTTP响应数据:', JSON.stringify(error.response.data, null, 2));
-      }
-      if (error?.request) {
-        console.error('请求配置:', JSON.stringify(error.request, null, 2));
-      }
-
       if (error instanceof HttpException) {
         throw error;
       }
