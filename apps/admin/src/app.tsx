@@ -1,3 +1,4 @@
+// 文件说明: UmiJS 运行时配置, 处理初始状态、权限与布局
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import { Avatar, Dropdown, Space } from 'antd';
@@ -8,7 +9,7 @@ import { swrConfig } from '@/utils/swr';
 import { isTokenValid, getUserFromToken } from '@/utils/jwt';
 import '@ant-design/v5-patch-for-react-19';
 
-const loginPath = '/zxm-toolkit-admin/login';
+const loginPath = '/login';
 
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
