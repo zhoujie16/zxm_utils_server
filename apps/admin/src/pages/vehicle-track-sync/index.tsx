@@ -3,12 +3,10 @@
  * 功能：支持选择多个月份（可跳空），将月份拆分为每7天一个周期，按周期逐个同步车辆轨迹数据
  */
 import React, { useMemo } from 'react';
-import { Card, Space, Button, Tag, Progress, Statistic, Row, Col, Alert, Collapse } from 'antd';
+import { Card, Space, Button, Tag, Progress, Statistic, Row, Col, Alert } from 'antd';
 import { SyncOutlined, CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useMultiMonthTrackSync, type IPeriodSyncStatus } from './hooks/useMultiMonthTrackSync';
 import MonthGridPicker from '@/components/MonthGridPicker';
-
-const { Panel } = Collapse;
 
 /**
  * 车辆轨迹同步页面组件
@@ -195,7 +193,7 @@ const VehicleTrackSyncPage: React.FC = () => {
       {/* 同步状态列表（按月份分组） */}
       {syncStatusList.length > 0 && (
         <Card title="同步详情">
-          <Collapse>
+          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             {Object.keys(groupedByMonth)
               .sort()
               .map((month) => {
@@ -205,18 +203,15 @@ const VehicleTrackSyncPage: React.FC = () => {
                 const monthTotal = periods.length;
 
                 return (
-                  <Panel
+                  <Card
                     key={month}
-                    header={
+                    size="small"
+                    title={
                       <Space>
                         <span style={{ fontWeight: 500 }}>{month}</span>
                         <Tag>{monthTotal} 个周期</Tag>
-                        {monthSuccess > 0 && (
-                          <Tag color="success">成功: {monthSuccess}</Tag>
-                        )}
-                        {monthFailed > 0 && (
-                          <Tag color="error">失败: {monthFailed}</Tag>
-                        )}
+                        {monthSuccess > 0 && <Tag color="success">成功: {monthSuccess}</Tag>}
+                        {monthFailed > 0 && <Tag color="error">失败: {monthFailed}</Tag>}
                       </Space>
                     }
                   >
@@ -264,10 +259,10 @@ const VehicleTrackSyncPage: React.FC = () => {
                         </Col>
                       ))}
                     </Row>
-                  </Panel>
+                  </Card>
                 );
               })}
-          </Collapse>
+          </Space>
         </Card>
       )}
 

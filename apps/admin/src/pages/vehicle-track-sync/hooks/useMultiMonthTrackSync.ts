@@ -1,6 +1,6 @@
 /**
  * 多月份车辆轨迹同步 Hook
- * 功能：管理多个月份的车辆轨迹数据同步逻辑，将月份拆分为每7天一个周期
+ * 功能：管理多个月份的车辆轨迹数据同步逻辑，将月份拆分为每日一个周期
  */
 import { useState, useCallback } from 'react';
 import { message } from 'antd';
@@ -49,7 +49,7 @@ export interface IUseMultiMonthTrackSyncReturn {
 }
 
 /**
- * 将月份拆分为多个7天周期
+ * 将月份拆分为多个1天周期
  * @param month 月份（格式：YYYY-MM）
  * @returns 周期列表
  */
@@ -64,8 +64,8 @@ const splitMonthIntoPeriods = (month: string): Array<{ startTime: string; endTim
   let currentStart = startDate;
   
   while (currentStart.isBefore(endDate) || currentStart.isSame(endDate, 'day')) {
-    // 计算当前周期的结束时间（7天后，或月份最后一天）
-    const periodEnd = currentStart.add(6, 'day');
+    // 当前周期为当日
+    const periodEnd = currentStart;
     const actualEnd = periodEnd.isAfter(endDate) ? endDate : periodEnd;
     
     // 格式化时间
