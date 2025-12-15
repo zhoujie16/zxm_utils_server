@@ -13,6 +13,7 @@ import routes from './routes';
  * @doc https://umijs.org/docs/api/config#publicpath
  */
 const PUBLIC_PATH: string = '/zxm-toolkit-admin/';
+const BASE_PATH: string = '/zxm-toolkit-admin';
 
 export default defineConfig({
   /**
@@ -28,7 +29,7 @@ export default defineConfig({
    * @doc https://umijs.org/docs/api/config#outputpath
    */
   outputPath: 'dist',
-
+  base: BASE_PATH,
   publicPath: PUBLIC_PATH,
 
   /**

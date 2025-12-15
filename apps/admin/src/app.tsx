@@ -8,7 +8,7 @@ import { swrConfig } from '@/utils/swr';
 import { isTokenValid, getUserFromToken } from '@/utils/jwt';
 import '@ant-design/v5-patch-for-react-19';
 
-const loginPath = '/login';
+const loginPath = '/zxm-toolkit-admin/login';
 
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
@@ -123,7 +123,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         if (key === 'logout') {
           // 处理退出登录
           localStorage.removeItem('token');
-          history.push('/login');
+          history.push(loginPath);
         }
       };
 
