@@ -1,5 +1,6 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
+import { history } from '@umijs/max';
 import { message, notification } from 'antd';
 
 // 错误处理方案： 错误类型
@@ -65,7 +66,7 @@ export const errorConfig: RequestConfig = {
             case ErrorShowType.REDIRECT:
               // 重定向到登录页面
               localStorage.removeItem('token');
-              window.location.href = '/login';
+              history.push('/login');
               break;
             default:
               message.error(errorMessage);
@@ -83,7 +84,7 @@ export const errorConfig: RequestConfig = {
           // 延迟跳转，避免重复跳转
           setTimeout(() => {
             if (window.location.pathname !== '/login') {
-              window.location.href = '/login';
+              history.push('/login');
             }
           }, 1000);
         } else if (status === 403) {

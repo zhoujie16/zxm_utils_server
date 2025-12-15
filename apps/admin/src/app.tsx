@@ -175,7 +175,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: '',
+  baseURL: '/zxm-toolkit-admin',
   ...errorConfig,
 };
 
