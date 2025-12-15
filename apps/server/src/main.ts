@@ -37,10 +37,11 @@ async function bootstrap() {
   // 配置 Swagger（生产环境禁用）
   if (appConfig.nodeEnv !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('NestJS Demo API')
-      .setDescription('NestJS Demo 项目 API 文档')
+      .setTitle('ZXM Toolkit Admin API')
+      .setDescription('个人工具集合管理平台 API 文档')
       .setVersion('1.0')
-      .addTag('demo', 'Demo 相关接口')
+      .addTag('auth', '认证相关接口')
+      .addTag('vehicle', '车辆管理相关接口')
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);

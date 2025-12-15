@@ -1,11 +1,11 @@
-# ZXM Admin App 项目
+# ZXM Toolkit Admin
 
-一个基于 Monorepo 架构的全栈 Web 应用项目，包含前端管理后台和后端 API 服务。
+个人工具集合管理平台，基于 Monorepo 架构的全栈 Web 应用，包含前端管理后台和后端 API 服务。
 
 ## 📋 项目结构
 
 ```
-zxm-admin-app/
+zxm-toolkit-admin/
 ├── apps/
 │   ├── admin/          # 前端管理后台 (UmiJS + React + Ant Design)
 │   └── server/         # 后端 API 服务 (NestJS + TypeScript + SQLite)

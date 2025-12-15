@@ -87,7 +87,7 @@ export function onRouteChange({ location }: { location: { pathname: string } }) 
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     // 布局配置
-    title: 'Admin Template',
+    title: 'ZXM Toolkit Admin',
     logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
     layout: 'mix',
     navTheme: 'light',
@@ -162,7 +162,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // 页脚配置
     footerRender: () => {
       return (
-        <div style={{ textAlign: 'center', padding: '16px 0' }}>Admin Template © 2024</div>
+        <div style={{ textAlign: 'center', padding: '16px 0' }}>ZXM Toolkit Admin © 2024</div>
       );
     },
   };

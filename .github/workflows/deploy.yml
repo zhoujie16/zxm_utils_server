@@ -1,0 +1,93 @@
+name: Deploy CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build admin package
+        run: yarn workspace admin build
+
+      - name: Build server package
+        run: yarn workspace server build
+
+      # 可选：CI 无需安装生产依赖，交由服务器安装，减小构建时间
+
+      - name: Package server artifact
+        run: |
+          tar -czf release.tar.gz \
+            apps/server/dist \
+            apps/server/package.json \
+            apps/server/tsconfig.json \
+            apps/server/ecosystem.config.js \
+            package.json
+
+      - name: Package admin artifact
+        run: tar -czf admin.tar.gz -C apps/admin/dist .
+
+      - name: Upload packages to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASSWORD }}
+          port: 22
+          source: "release.tar.gz,admin.tar.gz"
+          target: "/home/server/zxm_toolkit_admin"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+            cd /home/server/zxm_toolkit_admin
+            
+            # 部署后端服务
+            tar -xzf release.tar.gz
+            yarn install
+            
+            cd apps/server
+            if [ ! -f .env ]; then
+              echo "⚠️  警告: .env 文件不存在，请手动创建并配置"
+              echo "参考文件: env.example"
+            fi
+            
+            if pm2 describe zxm_toolkit_admin >/dev/null 2>&1; then
+              pm2 restart zxm_toolkit_admin
+            else
+              pm2 start ecosystem.config.js --only zxm_toolkit_admin
+            fi
+            pm2 save
+            
+            # 部署前端静态文件
+            cd /home/server/zxm_toolkit_admin
+            mkdir -p /www/wwwroot/w.abczzz.cn/zxm-toolkit-admin
+            rm -rf /www/wwwroot/w.abczzz.cn/zxm-toolkit-admin/*
+            tar -xzf admin.tar.gz -C /www/wwwroot/w.abczzz.cn/zxm-toolkit-admin
+            rm -f admin.tar.gz
+            echo "✅ 前后端部署完成"
+
+

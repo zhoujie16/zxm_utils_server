@@ -4,12 +4,12 @@
 
 ## 项目概述
 
-这是一个基于 Monorepo 架构的全栈管理应用，使用 Yarn Workspaces 管理。项目包含一个基于 React/UmiJS 的前端管理面板和一个 NestJS 后端 API 服务。
+这是一个个人工具集合管理平台，基于 Monorepo 架构的全栈应用，使用 Yarn Workspaces 管理。项目包含一个基于 React/UmiJS 的前端管理面板和一个 NestJS 后端 API 服务。
 
 ### 项目结构
 
 ```
-zxm-admin-app/
+zxm-toolkit-admin/
 ├── apps/
 │   ├── admin/          # 前端管理后台 (UmiJS + React + Ant Design)
 │   └── server/         # 后端 API 服务 (NestJS + TypeScript + SQLite)

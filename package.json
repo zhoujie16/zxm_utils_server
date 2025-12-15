@@ -1,13 +1,14 @@
 {
-  "name": "zxm-admin-app",
+  "name": "zxm-toolkit-admin",
   "version": "1.0.0",
   "private": true,
-  "description": "Monorepo 项目，使用 Yarn Workspaces 管理",
+  "description": "个人工具集合管理平台，基于 Monorepo 架构的全栈应用",
   "workspaces": [
     "apps/*"
   ],
   "packageManager": "yarn@1.22.22",
   "scripts": {
+    "build": "yarn workspace admin build && yarn workspace server build",
     "dev:admin": "yarn workspace admin dev",
     "dev:server": "yarn workspace server start:dev",
     "admin:build": "yarn workspace admin build",

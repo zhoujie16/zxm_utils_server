@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "0.0.1",
-  "description": "",
+  "description": "个人工具集合管理平台后端 API 服务",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
