@@ -8,6 +8,7 @@ export const DEFAULT_PAGINATION = {
   pageSize: 10,
   showSizeChanger: true,
   showQuickJumper: true,
+  pageSizeOptions: [10, 20, 50, 100],
   showTotal: (total: number, range: [number, number]) =>
     `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
 } as const;

@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'zxm_toolkit_admin',
-      script: 'dist/src/main.js',
+      script: 'dist/main.js',
       cwd: __dirname,
       instances: 1,
       exec_mode: 'fork',
@@ -14,8 +14,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
       },
-      error_file: './logs/pm2-error.log',
-      out_file: './logs/pm2-out.log',
+      error_file: './logs/error.log',
+      out_file: './logs/out.log',
       time: true,
     },
   ],

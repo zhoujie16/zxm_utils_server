@@ -3,13 +3,11 @@
  * 功能：展示车辆行程数据列表，支持分页和时间范围筛选
  */
 import React from 'react';
-import { Card, DatePicker, Space, Button, Pagination, Spin, Empty } from 'antd';
-import { ReloadOutlined, SyncOutlined } from '@ant-design/icons';
-import { DEFAULT_PAGINATION } from '@/constants/table';
+import { Card, Space, Button, Pagination, Spin, Empty } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 import type { IVehicleTrip } from '@/types';
 import PresetDateRangePicker from '@/components/PresetDateRangePicker';
 import { useTripList } from './hooks/useTripList';
-import { useSyncTrip } from './hooks/useSyncTrip';
 import TripCard from './components/TripCard';
 
 const VehicleTripPage: React.FC = () => {
@@ -25,14 +23,6 @@ const VehicleTripPage: React.FC = () => {
     setLimit,
     setDateRange,
   } = useTripList();
-
-  // 使用同步 Hook 管理同步逻辑
-  const {
-    isSyncing,
-    selectedMonth,
-    setSelectedMonth,
-    handleSync,
-  } = useSyncTrip(refresh);
 
   // 处理分页变化
   const handlePageChange = (newPage: number, newPageSize: number) => {
@@ -57,33 +47,9 @@ const VehicleTripPage: React.FC = () => {
               format="YYYY-MM-DD"
               placeholder={['开始日期', '结束日期']}
               allowClear
-              disabled={isSyncing}
             />
-            <Button icon={<ReloadOutlined />} onClick={refresh} loading={isLoading} disabled={isSyncing}>
+            <Button icon={<ReloadOutlined />} onClick={refresh} loading={isLoading}>
               刷新
-            </Button>
-          </Space>
-
-          {/* 同步数据区域 - 右侧 */}
-          <Space>
-            <span style={{ fontWeight: 500 }}>数据同步：</span>
-            <DatePicker
-              picker="month"
-              value={selectedMonth}
-              onChange={setSelectedMonth}
-              format="YYYY-MM"
-              placeholder="选择月份"
-              allowClear={false}
-              disabled={isSyncing}
-            />
-            <Button
-              type="primary"
-              icon={<SyncOutlined />}
-              onClick={handleSync}
-              loading={isSyncing}
-              disabled={isSyncing}
-            >
-              同步数据
             </Button>
           </Space>
         </div>
@@ -91,7 +57,7 @@ const VehicleTripPage: React.FC = () => {
 
       {/* 卡片列表区域 */}
       <Card>
-        <Spin spinning={isLoading || isSyncing}>
+        <Spin spinning={isLoading}>
           {tripList.length > 0 ? (
             <>
               <div>
@@ -107,7 +73,6 @@ const VehicleTripPage: React.FC = () => {
                   showSizeChanger
                   showQuickJumper
                   showTotal={(total) => `共 ${total} 条`}
-                  pageSizeOptions={DEFAULT_PAGINATION.pageSizeOptions}
                   onChange={handlePageChange}
                   onShowSizeChange={handlePageChange}
                 />
