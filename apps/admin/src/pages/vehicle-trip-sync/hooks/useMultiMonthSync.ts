@@ -5,7 +5,7 @@
 import { useState, useCallback } from 'react';
 import { message } from 'antd';
 import type { ISyncTripParams, ISyncTripResponse } from '@/types';
-import { syncTripData } from '@/services/vehicle-trip';
+import { syncTripData } from '@zxm-toolkit/http-client';
 
 /**
  * 单个月份同步状态

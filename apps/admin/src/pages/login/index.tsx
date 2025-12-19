@@ -7,7 +7,7 @@ import { history, useModel } from '@umijs/max';
 import { Button, Card, Checkbox, Form, Input, message } from 'antd';
 import React from 'react';
 import type { ILoginFormData } from '@/types';
-import { loginApi } from '@/services/login';
+import { loginApi } from '@zxm-toolkit/http-client';
 import './index.less';
 
 const ILoginPage: React.FC = () => {

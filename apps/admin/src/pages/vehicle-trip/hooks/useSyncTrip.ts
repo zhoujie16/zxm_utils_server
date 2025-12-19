@@ -7,7 +7,7 @@ import { message } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { ISyncTripParams, ISyncTripResponse } from '@/types';
-import { syncTripData } from '@/services/vehicle-trip';
+import { syncTripData } from '@zxm-toolkit/http-client';
 
 /**
  * 车辆行程同步 Hook 返回值类型

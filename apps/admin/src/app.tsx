@@ -1,13 +1,52 @@
 // 文件说明: UmiJS 运行时配置, 处理初始状态、权限与布局
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
-import { Avatar, Dropdown, Space } from 'antd';
+import { Avatar, Dropdown, Space, message } from 'antd';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { SWRConfig } from 'swr';
+import { initHttpClient, createSWRConfig, type IHttpError } from '@zxm-toolkit/http-client';
 import { errorConfig } from './requestErrorConfig';
-import { swrConfig } from '@/utils/swr';
 import { isTokenValid, getUserFromToken } from '@/utils/jwt';
 import '@ant-design/v5-patch-for-react-19';
+
+// 初始化 HTTP 客户端
+initHttpClient({
+  onError: (error: IHttpError) => {
+    if (error.code >= 500) {
+      message.error('服务器错误，请稍后重试');
+    } else if (error.code === 403) {
+      message.error('没有权限访问该资源');
+    } else if (error.code === 404) {
+      message.error('请求的资源不存在');
+    }
+  },
+  onUnauthorized: () => {
+    message.error('登录已过期，请重新登录');
+    setTimeout(() => {
+      if (window.location.pathname !== '/login') {
+        history.push('/login');
+      }
+    }, 1000);
+  },
+});
+
+// 创建 SWR 配置
+const swrConfig = createSWRConfig({
+  onError: (error: any) => {
+    console.error('SWR Error:', error);
+    if (error?.response?.status === 401) {
+      message.error('登录已过期，请重新登录');
+    } else if (error?.response?.status === 403) {
+      message.error('没有权限访问该资源');
+    } else if (error?.response?.status === 404) {
+      message.error('请求的资源不存在');
+    } else if (error?.response?.status >= 500) {
+      message.error('服务器错误，请稍后重试');
+    } else {
+      message.error('请求失败，请检查网络连接');
+    }
+  },
+});
 
 const loginPath = '/login';
 

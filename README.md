@@ -8,6 +8,7 @@
 zxm-toolkit-admin/
 ├── apps/
 │   ├── admin/          # 前端管理后台 (UmiJS + React + Ant Design)
+│   ├── client/         # 前端客户端应用 (Vite + React + React Vant)
 │   └── server/         # 后端 API 服务 (NestJS + TypeScript + SQLite)
 ├── doc-server-api/     # API 接口文档
 └── package.json        # 根配置文件 (Yarn Workspaces)
@@ -21,6 +22,14 @@ zxm-toolkit-admin/
 - **状态管理**: SWR
 - **语言**: TypeScript 5.6
 - **构建工具**: Mako
+
+### 前端 (Client)
+- **框架**: Vite 7.x + React 19
+- **UI 组件库**: React Vant 3.x
+- **路由**: React Router 7.x
+- **语言**: TypeScript 5.9
+- **样式**: Less
+- **本地存储**: LocalForage
 
 ### 后端 (Server)
 - **框架**: NestJS 11.x
@@ -60,8 +69,12 @@ cp env.example .env
 #### 方式一：分别启动（推荐）
 
 ```bash
-# 启动前端（端口 8008）
+# 启动管理后台（端口 8008）
 cd apps/admin
+yarn dev
+
+# 启动客户端应用（端口 6681）
+cd apps/client
 yarn dev
 
 # 启动后端（端口 8010）
@@ -72,8 +85,11 @@ yarn start:dev
 #### 方式二：使用根目录脚本
 
 ```bash
-# 启动前端
+# 启动管理后台
 yarn dev:admin
+
+# 启动客户端应用
+yarn dev:client
 
 # 启动后端
 yarn dev:server
@@ -82,6 +98,7 @@ yarn dev:server
 ### 访问地址
 
 - **前端管理后台**: http://localhost:8008
+- **前端客户端应用**: http://localhost:6681
 - **后端 API**: http://localhost:8010/api
 - **Swagger API 文档**: http://localhost:8010/docs (仅开发环境)
 
@@ -92,6 +109,12 @@ yarn dev:server
 基于 UmiJS 和 Ant Design 构建的管理后台系统，提供现代化的 UI 界面和良好的开发体验。
 
 详细文档请查看 [apps/admin/README.md](./apps/admin/README.md)
+
+### 前端 (apps/client)
+
+基于 Vite 和 React Vant 构建的客户端应用，提供移动端友好的 UI 界面和良好的用户体验。
+
+详细文档请查看 [apps/client/README.md](./apps/client/README.md)
 
 ### 后端 (apps/server)
 
@@ -110,10 +133,13 @@ yarn dev:server
 
 | 脚本 | 说明 |
 |------|------|
-| `yarn dev:admin` | 启动前端开发服务器 |
+| `yarn dev:admin` | 启动管理后台开发服务器 |
+| `yarn dev:client` | 启动客户端应用开发服务器 |
 | `yarn dev:server` | 启动后端开发服务器 |
-| `yarn admin:build` | 构建前端生产版本 |
+| `yarn admin:build` | 构建管理后台生产版本 |
+| `yarn client:build` | 构建客户端应用生产版本 |
 | `yarn server:build` | 构建后端生产版本 |
+| `yarn build` | 构建所有应用的生产版本 |
 | `yarn format` | 格式化所有代码文件 |
 
 ## 📝 开发规范

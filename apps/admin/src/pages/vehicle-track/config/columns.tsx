@@ -4,7 +4,7 @@
  */
 import type { ColumnsType } from 'antd/es/table';
 import { formatTime } from '@/utils/format';
-import type { IVehicleTrack } from '@/types';
+import type { IVehicleTrack } from '@shared-components/track-map';
 
 /**
  * 车辆轨迹表格列配置

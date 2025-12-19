@@ -1,0 +1,69 @@
+/**
+ * @fileoverview Less Mixins 定义
+ * @author Claude
+ * @created 2024-01-01
+ */
+
+// 清除默认样式
+.clearfix() {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 文本溢出处理
+.text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本溢出
+.text-ellipsis-multi(@lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 居中布局
+.center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 按钮基础样式
+.button-base() {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// 卡片基础样式
+.card-base() {
+  background: @card-background;
+  border-radius: @border-radius-lg;
+  border: 1px solid @border-color;
+  box-shadow: @shadow-sm;
+}
+
+// 安全区域适配
+.safe-area() {
+  padding-top: max(@spacing-sm, env(safe-area-inset-top));
+  padding-bottom: max(@spacing-sm, env(safe-area-inset-bottom));
+}
+

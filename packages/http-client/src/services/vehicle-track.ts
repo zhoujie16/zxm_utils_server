@@ -1,8 +1,18 @@
 /**
- * 车辆轨迹 API 服务
+ * @fileoverview 车辆轨迹服务 API
+ * @author Claude
+ * @created 2024-01-01
  */
-import { request } from '@umijs/max';
-import type { IQueryTrackParams, ITrackListResponse, ISyncTrackParams, ISyncTrackResponse } from '@/types';
+
+import { get, post } from '../index';
+import type {
+  IQueryTrackParams,
+  ITrackListResponse,
+  ISyncTrackParams,
+  ISyncTrackResponse,
+} from '../api-types';
+
+const BASE_URL = '/vehicle-track';
 
 /**
  * 查询车辆轨迹数据列表
@@ -10,8 +20,7 @@ import type { IQueryTrackParams, ITrackListResponse, ISyncTrackParams, ISyncTrac
  * @returns 车辆轨迹列表响应
  */
 export async function getTrackList(params: IQueryTrackParams): Promise<ITrackListResponse> {
-  return request('/api/vehicle-track', {
-    method: 'GET',
+  return get<ITrackListResponse>(BASE_URL, {
     params,
   });
 }
@@ -22,8 +31,6 @@ export async function getTrackList(params: IQueryTrackParams): Promise<ITrackLis
  * @returns 同步结果响应
  */
 export async function syncTrackData(params: ISyncTrackParams): Promise<ISyncTrackResponse> {
-  return request('/api/vehicle-track/sync', {
-    method: 'POST',
-    data: params,
-  });
+  return post<ISyncTrackResponse>(`${BASE_URL}/sync`, params);
 }
+

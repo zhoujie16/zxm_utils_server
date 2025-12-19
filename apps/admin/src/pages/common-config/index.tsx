@@ -22,7 +22,7 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 import type { ICommonConfig } from '@/types';
-import { getConfigList, createConfig, updateConfig, deleteConfig } from '@/services/common-config';
+import { getConfigList, createConfig, updateConfig, deleteConfig } from '@zxm-toolkit/http-client';
 import { formatTime } from '@/utils/format';
 
 const { TextArea } = Input;

@@ -5,7 +5,7 @@
 import React from 'react';
 import { Card, Space, Button, Table, Spin } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import type { IVehicleTrack } from '@/types';
+import type { IVehicleTrack } from '@shared-components/track-map';
 import PresetDateRangePicker from '@/components/PresetDateRangePicker';
 import { useTrackList } from './hooks/useTrackList';
 import { trackColumns } from './config/columns';

@@ -6,7 +6,7 @@ import { useState, useCallback } from 'react';
 import { message } from 'antd';
 import dayjs from 'dayjs';
 import type { ISyncTrackParams, ISyncTrackResponse } from '@/types';
-import { syncTrackData } from '@/services/vehicle-track';
+import { syncTrackData } from '@zxm-toolkit/http-client';
 
 /**
  * 单个周期同步状态

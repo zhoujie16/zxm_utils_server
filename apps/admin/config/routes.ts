@@ -52,6 +52,12 @@ export default [
     icon: 'SyncOutlined',
     component: './vehicle-track-sync',
   },
+  {
+    path: '/vehicle-track-display',
+    name: '车辆轨迹显示',
+    icon: 'EnvironmentOutlined',
+    component: './vehicle-track-display',
+  },
 
   // 404页面
   {

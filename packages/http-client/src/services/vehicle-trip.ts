@@ -1,8 +1,18 @@
 /**
- * 车辆行程 API 服务
+ * @fileoverview 车辆行程服务 API
+ * @author Claude
+ * @created 2024-01-01
  */
-import { request } from '@umijs/max';
-import type { IQueryTripParams, ITripListResponse, ISyncTripParams, ISyncTripResponse } from '@/types';
+
+import { get, post } from '../index';
+import type {
+  IQueryTripParams,
+  ITripListResponse,
+  ISyncTripParams,
+  ISyncTripResponse,
+} from '../api-types';
+
+const BASE_URL = '/vehicle-trip';
 
 /**
  * 查询车辆行程数据列表
@@ -10,8 +20,7 @@ import type { IQueryTripParams, ITripListResponse, ISyncTripParams, ISyncTripRes
  * @returns 车辆行程列表响应
  */
 export async function getTripList(params: IQueryTripParams): Promise<ITripListResponse> {
-  return request('/api/vehicle-trip', {
-    method: 'GET',
+  return get<ITripListResponse>(BASE_URL, {
     params,
   });
 }
@@ -22,9 +31,6 @@ export async function getTripList(params: IQueryTripParams): Promise<ITripListRe
  * @returns 同步结果响应
  */
 export async function syncTripData(params: ISyncTripParams): Promise<ISyncTripResponse> {
-  return request('/api/vehicle-trip/sync', {
-    method: 'POST',
-    data: params,
-  });
+  return post<ISyncTripResponse>(`${BASE_URL}/sync`, params);
 }
 

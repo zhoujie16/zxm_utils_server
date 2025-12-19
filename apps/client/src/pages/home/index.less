@@ -1,0 +1,82 @@
+/**
+ * @fileoverview 首页样式
+ * @author Claude
+ * @created 2024-01-01
+ */
+
+@import '../../styles/variables.less';
+
+.home-page {
+  min-height: 100vh;
+  background-color: @background-color;
+
+  &__container {
+    padding: @spacing-lg;
+  }
+
+  &__title {
+    font-size: @font-size-xl;
+    font-weight: 600;
+    color: @text-color;
+    margin-bottom: @spacing-sm;
+  }
+
+  &__subtitle {
+    font-size: @font-size-base;
+    color: @text-secondary;
+    margin-bottom: @spacing-2xl;
+  }
+
+  &__functions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: @spacing-lg;
+  }
+
+  &__function-card {
+    background: @card-background;
+    border-radius: @border-radius-lg;
+    padding: @spacing-xl;
+    text-align: center;
+    cursor: pointer;
+    transition: all @transition-normal;
+    border: 1px solid @border-color;
+    box-shadow: @shadow-sm;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: @shadow-md;
+      border-color: @primary-color;
+    }
+
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
+
+  &__function-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: fade(@primary-color, 10%);
+    color: @primary-color;
+    margin-bottom: @spacing-md;
+  }
+
+  &__function-title {
+    font-size: @font-size-md;
+    font-weight: 600;
+    color: @text-color;
+    margin-bottom: @spacing-xs;
+  }
+
+  &__function-desc {
+    font-size: @font-size-sm;
+    color: @text-secondary;
+    line-height: 1.5;
+  }
+}
+

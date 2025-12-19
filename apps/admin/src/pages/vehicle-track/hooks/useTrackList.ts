@@ -3,10 +3,9 @@
  * 功能：管理车辆轨迹列表的数据获取、分页、筛选等逻辑
  */
 import { useState, useMemo } from 'react';
-import useSWR from 'swr';
 import type { Dayjs } from 'dayjs';
+import { useTrackList as useHttpTrackList } from '@zxm-toolkit/http-client';
 import type { IQueryTrackParams, ITrackListResponse } from '@/types';
-import { getTrackList } from '@/services/vehicle-track';
 
 /**
  * 车辆轨迹列表 Hook 返回值类型
@@ -46,44 +45,39 @@ export const useTrackList = (
   initialPage = 1,
   initialLimit = 10,
 ): IUseTrackListReturn => {
-  const [page, setPage] = useState(initialPage);
-  const [limit, setLimit] = useState(initialLimit);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
-  // 构建查询参数
-  const queryParams: IQueryTrackParams = useMemo(() => {
-    const params: IQueryTrackParams = {
+  // 计算时间戳
+  const startTime = useMemo(() => {
+    return dateRange && dateRange[0] ? dateRange[0].startOf('day').valueOf() : undefined;
+  }, [dateRange]);
+
+  const endTime = useMemo(() => {
+    return dateRange && dateRange[1] ? dateRange[1].endOf('day').valueOf() : undefined;
+  }, [dateRange]);
+
+  // 使用封装的 Hook
+  const {
+    data,
+    isLoading,
+    error,
+    refresh,
       page,
       limit,
-    };
-
-    // 时间范围筛选
-    if (dateRange && dateRange[0] && dateRange[1]) {
-      params.startTime = dateRange[0].startOf('day').valueOf();
-      params.endTime = dateRange[1].endOf('day').valueOf();
-    }
-
-    return params;
-  }, [page, limit, dateRange]);
-
-  // 使用 SWR 获取数据
-  const { data, error, isLoading, mutate } = useSWR<ITrackListResponse>(
-    ['/api/vehicle-track', queryParams],
-    ([, params]) => getTrackList(params as IQueryTrackParams),
-    {
-      revalidateOnFocus: false,
-    },
-  );
-
-  // 刷新数据
-  const refresh = () => {
-    mutate();
-  };
+    setPage,
+    setLimit,
+    setTimeRange,
+    queryParams,
+  } = useHttpTrackList(initialPage, initialLimit, startTime, endTime);
 
   // 处理时间范围变化（重置到第一页）
   const handleSetDateRange = (dates: [Dayjs | null, Dayjs | null] | null) => {
     setDateRange(dates);
-    setPage(1);
+    if (dates && dates[0] && dates[1]) {
+      setTimeRange(dates[0].startOf('day').valueOf(), dates[1].endOf('day').valueOf());
+    } else {
+      setTimeRange(undefined, undefined);
+    }
   };
 
   return {

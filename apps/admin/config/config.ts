@@ -1,7 +1,7 @@
 // 文件说明: UmiJS 配置文件, 定义管理端构建与运行参数
 // https://umijs.org/config/
 
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import proxy from './proxy';
 
@@ -14,6 +14,9 @@ import routes from './routes';
  */
 const PUBLIC_PATH: string = '/zxm-toolkit-admin/';
 const BASE_PATH: string = '/zxm-toolkit-admin';
+
+// 计算项目根目录路径（从 apps/admin/config 向上三级到项目根目录）
+const ROOT_DIR = resolve(__dirname, '../../..');
 
 export default defineConfig({
   /**
@@ -162,4 +165,12 @@ export default defineConfig({
    * @doc https://umijs.org/docs/api/config#devtool
    */
   devtool: false,
+  /**
+   * @name 路径别名配置
+   * @description 配置路径别名，方便导入共享组件
+   * @note @shared-components/track-map 通过 Yarn workspace 自动解析，无需配置别名
+   */
+  alias: {
+    '@zxm-toolkit/http-client': resolve(ROOT_DIR, 'packages/http-client/src'),
+  },
 });

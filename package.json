@@ -4,15 +4,18 @@
   "private": true,
   "description": "个人工具集合管理平台，基于 Monorepo 架构的全栈应用",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "packageManager": "yarn@1.22.22",
   "scripts": {
-    "build": "yarn workspace admin build && yarn workspace server build",
+    "build": "yarn workspace admin build && yarn workspace server build && yarn workspace client build",
     "dev:admin": "yarn workspace admin dev",
     "dev:server": "yarn workspace server start:dev",
+    "dev:client": "yarn workspace client dev",
     "admin:build": "yarn workspace admin build",
     "server:build": "yarn workspace server build",
+    "client:build": "yarn workspace client build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "install:all": "yarn install"
   },
