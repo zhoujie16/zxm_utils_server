@@ -28,9 +28,9 @@ export interface ITrackMapProps {
   trackData: IVehicleTrack[];
   /** 地图高度（可选，默认 600px） */
   height?: number | string;
-  /** 轨迹线颜色（可选，默认 #1890ff） */
+  /** 轨迹线颜色（可选，默认 #5EC33A） */
   lineColor?: string;
-  /** 轨迹线宽度（可选，默认 3） */
+  /** 轨迹线宽度（可选，默认 3.5） */
   lineWeight?: number;
   /** 轨迹线透明度（可选，默认 0.8） */
   lineOpacity?: number;
@@ -54,8 +54,8 @@ const formatHeight = (height: number | string): string => {
 const TrackMap: React.FC<ITrackMapProps> = ({
   trackData = [],
   height = 600,
-  lineColor = '#1890ff',
-  lineWeight = 3,
+  lineColor = '#5EC33A',
+  lineWeight = 3.5,
   lineOpacity = 0.8,
   gaodeApiKey,
 }) => {

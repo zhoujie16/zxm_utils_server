@@ -11,7 +11,7 @@ import { IHttpClientConfig } from './types';
  */
 export const DEFAULT_CONFIG: IHttpClientConfig = {
   baseURL: '/api',
-  timeout: 10000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },

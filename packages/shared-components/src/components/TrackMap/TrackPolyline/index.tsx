@@ -24,25 +24,38 @@ export interface ITrackPolylineProps {
 
 /**
  * 轨迹线组件
- * 功能：在地图上绘制轨迹线
+ * 功能：在地图上绘制轨迹线，带黑色描边效果
  */
 const TrackPolyline: React.FC<ITrackPolylineProps> = ({
   positions,
-  color = '#1890ff',
-  weight = 3,
+  color = '#5EC33A',
+  weight = 3.5,
   opacity = 0.8,
 }) => {
   if (positions.length <= 1) {
     return null;
   }
 
+  // 描边宽度：比主线条宽 2px
+  const strokeWeight = weight + 2;
+
   return (
-    <Polyline
-      positions={positions}
-      color={color}
-      weight={weight}
-      opacity={opacity}
-    />
+    <>
+      {/* 黑色描边层（底层） */}
+      <Polyline
+        positions={positions}
+        color="#000000"
+        weight={strokeWeight}
+        opacity={opacity * 0.6}
+      />
+      {/* 主轨迹线（上层） */}
+      <Polyline
+        positions={positions}
+        color={color}
+        weight={weight}
+        opacity={opacity}
+      />
+    </>
   );
 };
 

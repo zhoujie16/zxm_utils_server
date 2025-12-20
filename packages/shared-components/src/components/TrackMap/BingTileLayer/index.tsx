@@ -85,3 +85,4 @@ const BingTileLayer: React.FC<IBingTileLayerProps> = ({ mapType, visible = true 
 export default BingTileLayer;
 
 
+
