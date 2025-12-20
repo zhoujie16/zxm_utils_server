@@ -30,6 +30,7 @@ unstableSetRender((node, container) => {
 
 // 初始化 HTTP 客户端
 initHttpClient({
+  baseURL: '/zxm-toolkit-client/api',
   onError: (error: IHttpError) => {
     console.error('请求错误:', error.message);
   },

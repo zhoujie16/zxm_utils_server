@@ -11,6 +11,7 @@ import '@ant-design/v5-patch-for-react-19';
 
 // 初始化 HTTP 客户端
 initHttpClient({
+  baseURL: '/zxm-toolkit-admin/api',
   onError: (error: IHttpError) => {
     if (error.code >= 500) {
       message.error('服务器错误，请稍后重试');

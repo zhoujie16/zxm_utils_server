@@ -27,10 +27,17 @@ export default defineConfig({
   server: {
     port: 8009,
     proxy: {
+      // localhost:8009/api/** -> http://localhost:8010/api/**
       '/api': {
         target: 'http://localhost:8010',
         changeOrigin: true,
         rewrite: (path) => path,
+      },
+      // localhost:8009/zxm-toolkit-client/api/** -> http://localhost:8010/api/**
+      '/zxm-toolkit-client/api': {
+        target: 'http://localhost:8010',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/zxm-toolkit-client/, ''),
       },
     },
   },
