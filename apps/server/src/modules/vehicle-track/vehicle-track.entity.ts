@@ -47,13 +47,21 @@ export class VehicleTrack {
   @Column({ type: 'bigint' })
   gpsTime: number;
 
-  @ApiProperty({ description: '纬度', example: 31.194825142366195 })
+  @ApiProperty({ description: 'BD-09坐标系纬度（百度地图）', example: 31.194825142366195 })
   @Column({ type: 'real' })
   lat: number;
 
-  @ApiProperty({ description: '经度', example: 121.54489237789676 })
+  @ApiProperty({ description: 'BD-09坐标系经度（百度地图）', example: 121.54489237789676 })
   @Column({ type: 'real' })
   lng: number;
+
+  @ApiProperty({ description: 'GCJ-02坐标系纬度（高德地图）', example: 31.194825142366195 })
+  @Column({ type: 'real', nullable: true })
+  lat_gcj02: number | null;
+
+  @ApiProperty({ description: 'GCJ-02坐标系经度（高德地图）', example: 121.54489237789676 })
+  @Column({ type: 'real', nullable: true })
+  lng_gcj02: number | null;
 
   @ApiProperty({ description: '定位方法', example: 0 })
   @Column({ type: 'integer', default: 0 })

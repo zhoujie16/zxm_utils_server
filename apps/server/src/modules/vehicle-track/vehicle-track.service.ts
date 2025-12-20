@@ -118,6 +118,42 @@ export class VehicleTrackService {
   }
 
   /**
+   * 将百度坐标系（BD-09）转换为GCJ-02坐标系（高德地图）
+   * @param bdLat 百度纬度
+   * @param bdLng 百度经度
+   * @returns GCJ-02坐标 [纬度, 经度]，转换失败返回 null
+   */
+  private async convertBaiduToGcj02(bdLat: number, bdLng: number): Promise<[number, number] | null> {
+    try {
+      // 从配置表读取百度地图API Key
+      const config = await this.commonConfigService.findByKey('BaiduMapApiKey');
+      if (!config || !config.isEnabled || !config.configValue) {
+        console.warn('百度地图API Key配置不存在或未启用，跳过坐标转换');
+        return null;
+      }
+
+      const apiKey = config.configValue;
+      // 百度坐标转换API：from=5表示BD-09，to=3表示GCJ-02
+      const url = `https://api.map.baidu.com/geoconv/v1/?coords=${bdLng},${bdLat}&from=5&to=3&ak=${apiKey}`;
+
+      const response = await axios.get(url, {
+        timeout: 5000, // 5秒超时
+      });
+
+      if (response.data.status === 0 && response.data.result && response.data.result.length > 0) {
+        const result = response.data.result[0];
+        return [result.y, result.x]; // 返回 [纬度, 经度]
+      } else {
+        console.error(`百度坐标转换API返回错误: ${response.data.message || '未知错误'}`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`百度坐标转换失败 (lat: ${bdLat}, lng: ${bdLng}):`, error.message);
+      return null;
+    }
+  }
+
+  /**
    * 保存单条轨迹数据
    */
   private async saveTrackData(item: any): Promise<VehicleTrack> {
@@ -133,6 +169,19 @@ export class VehicleTrackService {
       },
     });
 
+    // 解析百度坐标系坐标
+    const baiduLat = this.parseNumber(item.lat);
+    const baiduLng = this.parseNumber(item.lng);
+
+    // 如果数据已存在且GCJ-02坐标已有值，跳过坐标转换，使用已有值
+    let gcj02Coords: [number, number] | null = null;
+    if (existingTrack && existingTrack.lat_gcj02 !== null && existingTrack.lng_gcj02 !== null) {
+      gcj02Coords = [existingTrack.lat_gcj02, existingTrack.lng_gcj02];
+    } else {
+      // 调用百度坐标转换API，转换为GCJ-02坐标系
+      gcj02Coords = await this.convertBaiduToGcj02(baiduLat, baiduLng);
+    }
+
     // 构建实体数据
     const trackData: Partial<VehicleTrack> = {
       imei: '868120325700570',
@@ -141,8 +190,10 @@ export class VehicleTrackService {
       gpsMode: this.parseNumber(item.gpsMode),
       gpsSpeed: this.parseNumber(item.gpsSpeed),
       gpsTime: gpsTimeStamp,
-      lat: this.parseNumber(item.lat),
-      lng: this.parseNumber(item.lng),
+      lat: baiduLat,
+      lng: baiduLng,
+      lat_gcj02: gcj02Coords ? gcj02Coords[0] : null,
+      lng_gcj02: gcj02Coords ? gcj02Coords[1] : null,
       posMethod: this.parseNumber(item.posMethod),
       posMulFlag: this.parseNumber(item.posMulFlag),
       posType: this.parseNumber(item.posType),

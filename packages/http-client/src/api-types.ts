@@ -72,10 +72,14 @@ export interface IVehicleTrack {
   vehicleId?: number;
   /** 设备ID */
   deviceId: string;
-  /** 纬度 */
+  /** BD-09坐标系纬度（百度地图） */
   lat: number;
-  /** 经度 */
+  /** BD-09坐标系经度（百度地图） */
   lng: number;
+  /** GCJ-02坐标系纬度（高德地图），可选 */
+  lat_gcj02?: number | null;
+  /** GCJ-02坐标系经度（高德地图），可选 */
+  lng_gcj02?: number | null;
   /** 速度（km/h） */
   speed: number;
   /** 方向角（度） */

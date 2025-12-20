@@ -26,7 +26,7 @@ export const trackColumns: ColumnsType<IVehicleTrack> = [
     render: (time: number) => formatTime(time),
   },
   {
-    title: '纬度',
+    title: 'BD-09纬度',
     dataIndex: 'lat',
     key: 'lat',
     width: 120,
@@ -34,12 +34,28 @@ export const trackColumns: ColumnsType<IVehicleTrack> = [
     render: (value: number) => value?.toFixed(6) ?? '-',
   },
   {
-    title: '经度',
+    title: 'BD-09经度',
     dataIndex: 'lng',
     key: 'lng',
     width: 120,
     align: 'right',
     render: (value: number) => value?.toFixed(6) ?? '-',
+  },
+  {
+    title: 'GCJ-02纬度',
+    dataIndex: 'lat_gcj02',
+    key: 'lat_gcj02',
+    width: 130,
+    align: 'right',
+    render: (value: number | null | undefined) => value !== null && value !== undefined ? value.toFixed(6) : '-',
+  },
+  {
+    title: 'GCJ-02经度',
+    dataIndex: 'lng_gcj02',
+    key: 'lng_gcj02',
+    width: 130,
+    align: 'right',
+    render: (value: number | null | undefined) => value !== null && value !== undefined ? value.toFixed(6) : '-',
   },
   {
     title: 'GPS速度（km/h）',

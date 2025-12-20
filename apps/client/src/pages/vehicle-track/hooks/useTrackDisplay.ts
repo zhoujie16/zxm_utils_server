@@ -52,6 +52,8 @@ function convertToSharedTrack(track: IVehicleTrack): ISharedVehicleTrack | null 
     gpsTime: track.timestamp,
     lat: track.lat,
     lng: track.lng,
+    lat_gcj02: track.lat_gcj02,
+    lng_gcj02: track.lng_gcj02,
     posMethod: 0, // 默认值
     posMulFlag: 0, // 默认值
     posType: 0, // 默认值

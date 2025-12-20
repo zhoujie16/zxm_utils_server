@@ -44,6 +44,8 @@ GET /api/vehicle-track?page=1&limit=10&startTime=1736822392000&endTime=173682239
       "gpsTime": 1736822392000,
       "lat": 31.194825142366195,
       "lng": 121.54489237789676,
+      "lat_gcj02": 31.194825142366195,
+      "lng_gcj02": 121.54489237789676,
       "posMethod": 0,
       "posMulFlag": 0,
       "posType": 1,
@@ -74,8 +76,10 @@ GET /api/vehicle-track?page=1&limit=10&startTime=1736822392000&endTime=173682239
 | gpsMode | number | GPS模式 |
 | gpsSpeed | number | GPS速度（km/h） |
 | gpsTime | number | GPS时间（13位时间戳，毫秒） |
-| lat | number | 纬度 |
-| lng | number | 经度 |
+| lat | number | BD-09坐标系纬度（百度地图） |
+| lng | number | BD-09坐标系经度（百度地图） |
+| lat_gcj02 | number \| null | GCJ-02坐标系纬度（高德地图），转换失败时为 null |
+| lng_gcj02 | number \| null | GCJ-02坐标系经度（高德地图），转换失败时为 null |
 | posMethod | number | 定位方法 |
 | posMulFlag | number | 定位多重标志 |
 | posType | number | 定位类型 |
@@ -185,4 +189,5 @@ const response2 = await axios.get('http://localhost:8010/api/vehicle-track', {
 
 5. **数据格式**: 
    - 时间字段 `gateTime` 和 `gpsTime` 为时间戳（毫秒，13位）
-   - 经纬度字段 `lat` 和 `lng` 为浮点数
+   - 经纬度字段 `lat` 和 `lng` 为浮点数（BD-09坐标系，百度地图）
+   - 经纬度字段 `lat_gcj02` 和 `lng_gcj02` 为浮点数（GCJ-02坐标系，高德地图），可能为 null

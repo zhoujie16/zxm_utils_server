@@ -22,10 +22,14 @@ export interface IVehicleTrack {
   gpsSpeed: number;
   /** GPS时间（13位时间戳，毫秒） */
   gpsTime: number;
-  /** 纬度 */
+  /** BD-09坐标系纬度（百度地图） */
   lat: number;
-  /** 经度 */
+  /** BD-09坐标系经度（百度地图） */
   lng: number;
+  /** GCJ-02坐标系纬度（高德地图），可选 */
+  lat_gcj02?: number | null;
+  /** GCJ-02坐标系经度（高德地图），可选 */
+  lng_gcj02?: number | null;
   /** 定位方法 */
   posMethod: number;
   /** 定位多重标志 */

@@ -40,15 +40,27 @@ export const bd09ToGcj02 = (bdLat: number, bdLng: number): [number, number] => {
 };
 
 /**
- * 将轨迹数据转换为地图坐标数组（自动转换百度坐标系为火星坐标系）
- * @param trackData 轨迹数据数组（百度坐标系 BD-09）
+ * 将轨迹数据转换为地图坐标数组（优先使用GCJ-02坐标，否则自动转换百度坐标系为火星坐标系）
+ * @param trackData 轨迹数据数组
  * @returns 地图坐标数组（火星坐标系 GCJ-02）
  */
 export const convertTrackToPositions = (trackData: IVehicleTrack[]): LatLngExpression[] => {
   return trackData
-    .filter((item) => item.lat && item.lng)
+    .filter((item) => {
+      // 优先检查GCJ-02坐标，如果没有则检查百度坐标
+      if (item.lat_gcj02 !== null && item.lat_gcj02 !== undefined && 
+          item.lng_gcj02 !== null && item.lng_gcj02 !== undefined) {
+        return true;
+      }
+      return item.lat && item.lng;
+    })
     .map((item) => {
-      // 将百度坐标系转换为火星坐标系
+      // 优先使用GCJ-02坐标，如果没有则转换百度坐标系
+      if (item.lat_gcj02 !== null && item.lat_gcj02 !== undefined && 
+          item.lng_gcj02 !== null && item.lng_gcj02 !== undefined) {
+        return [item.lat_gcj02, item.lng_gcj02] as LatLngExpression;
+      }
+      // 回退：将百度坐标系转换为火星坐标系
       const [gcjLat, gcjLng] = bd09ToGcj02(item.lat, item.lng);
       return [gcjLat, gcjLng] as LatLngExpression;
     });
