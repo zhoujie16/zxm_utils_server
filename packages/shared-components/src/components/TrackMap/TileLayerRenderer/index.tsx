@@ -7,10 +7,7 @@
 import React from 'react';
 import type { MapProvider } from '../hooks/useMapProvider';
 import type { MapViewType } from '../hooks/useMapViewType';
-import DefaultTileLayer from '../DefaultTileLayer';
 import BingTileLayer from '../BingTileLayer';
-import TiandituTileLayer from '../TiandituTileLayer';
-import TiandituLabelLayer from '../TiandituLabelLayer';
 import GaodeTileLayer from '../GaodeTileLayer';
 import GaodeLabelLayer from '../GaodeLabelLayer';
 
@@ -22,8 +19,6 @@ export interface ITileLayerRendererProps {
   mapProvider: MapProvider;
   /** 地图视图类型 */
   mapViewType: MapViewType;
-  /** 天地图 API 密钥 */
-  tiandituApiKey?: string;
   /** 高德地图 API 密钥 */
   gaodeApiKey?: string;
 }
@@ -35,29 +30,11 @@ export interface ITileLayerRendererProps {
 const TileLayerRenderer: React.FC<ITileLayerRendererProps> = ({
   mapProvider,
   mapViewType,
-  tiandituApiKey,
   gaodeApiKey,
 }) => {
   // 根据地图提供商显示对应的瓦片层
-  if (mapProvider === 'default') {
-    return <DefaultTileLayer mapType={mapViewType} />;
-  }
-
   if (mapProvider === 'bing') {
     return <BingTileLayer mapType={mapViewType === 'normal' ? 'road' : 'satellite'} />;
-  }
-
-  if (mapProvider === 'tianditu') {
-    return (
-      <>
-        <TiandituTileLayer
-          mapType={mapViewType === 'normal' ? 'road' : 'satellite'}
-          apiKey={tiandituApiKey}
-        />
-        {/* 天地图所有模式下都显示文字标注 */}
-        <TiandituLabelLayer apiKey={tiandituApiKey} />
-      </>
-    );
   }
 
   if (mapProvider === 'gaode') {

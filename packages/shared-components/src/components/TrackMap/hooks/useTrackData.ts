@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import { LatLngBounds } from 'leaflet';
 import type { LatLngExpression } from 'leaflet';
 import type { IVehicleTrack } from '../../../types/vehicle-track';
-import { convertTrackToPositions, calculateMapBounds } from '../../../utils/trackUtils';
+import { convertTrackToPositions, calculateMapBounds, bd09ToGcj02 } from '../../../utils/trackUtils';
 
 /**
  * 轨迹数据处理 Hook 返回值
@@ -44,13 +44,26 @@ export const useTrackData = (trackData: IVehicleTrack[]): IUseTrackDataReturn =>
     return calculateMapBounds(positions);
   }, [positions]);
 
-  // 获取起点和终点（确保坐标有效）
+  // 获取起点和终点（确保坐标有效，并转换坐标系）
   const { startPoint, endPoint } = useMemo(() => {
     const validTrackData = safeTrackData.filter(
       (item) => item && typeof item.lat === 'number' && typeof item.lng === 'number'
     );
-    const start = validTrackData.length > 0 ? validTrackData[0] : null;
-    const end = validTrackData.length > 0 ? validTrackData[validTrackData.length - 1] : null;
+    
+    // 转换起点坐标
+    const start = validTrackData.length > 0 ? (() => {
+      const item = validTrackData[0];
+      const [gcjLat, gcjLng] = bd09ToGcj02(item.lat, item.lng);
+      return { ...item, lat: gcjLat, lng: gcjLng };
+    })() : null;
+    
+    // 转换终点坐标
+    const end = validTrackData.length > 0 ? (() => {
+      const item = validTrackData[validTrackData.length - 1];
+      const [gcjLat, gcjLng] = bd09ToGcj02(item.lat, item.lng);
+      return { ...item, lat: gcjLat, lng: gcjLng };
+    })() : null;
+    
     return { startPoint: start, endPoint: end };
   }, [safeTrackData]);
 

@@ -34,8 +34,6 @@ export interface ITrackMapProps {
   lineWeight?: number;
   /** 轨迹线透明度（可选，默认 0.8） */
   lineOpacity?: number;
-  /** 天地图 API 密钥（可选，使用天地图时必须提供，需在天地图官网申请：http://lbs.tianditu.gov.cn/） */
-  tiandituApiKey?: string;
   /** 高德地图 API 密钥（可选，虽然无 key 也能访问，但建议提供以确保稳定性和合规性，需在高德开放平台申请：https://console.amap.com/） */
   gaodeApiKey?: string;
 }
@@ -59,7 +57,6 @@ const TrackMap: React.FC<ITrackMapProps> = ({
   lineColor = '#1890ff',
   lineWeight = 3,
   lineOpacity = 0.8,
-  tiandituApiKey,
   gaodeApiKey,
 }) => {
   // 使用 hooks 管理数据
@@ -87,7 +84,6 @@ const TrackMap: React.FC<ITrackMapProps> = ({
         <TileLayerRenderer
           mapProvider={mapProvider}
           mapViewType={mapViewType}
-          tiandituApiKey={tiandituApiKey}
           gaodeApiKey={gaodeApiKey}
         />
         <MapBoundsUpdater bounds={bounds} />

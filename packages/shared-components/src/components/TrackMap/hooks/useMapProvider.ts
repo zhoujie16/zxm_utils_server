@@ -9,7 +9,7 @@ import { useState } from 'react';
 /**
  * 地图提供商类型
  */
-export type MapProvider = 'default' | 'bing' | 'tianditu' | 'gaode';
+export type MapProvider = 'bing' | 'gaode';
 
 /**
  * 地图提供商状态管理 Hook 返回值
