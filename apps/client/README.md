@@ -34,7 +34,7 @@
 
 ### UI 组件
 - **图标库**：lucide-react
-- **移动端组件**：自定义触摸优化组件
+- **移动端组件库**：antd-mobile
 - **PWA 支持**：vite-plugin-pwa + Workbox
 
 ### 开发工具

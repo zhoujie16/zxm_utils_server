@@ -7,7 +7,6 @@ import { Space } from 'antd';
 import { useTrackDisplay } from './hooks/useTrackDisplay';
 import TrackDisplayToolbar from './components/TrackDisplayToolbar';
 import TrackMapContainer from './components/TrackMapContainer';
-import TrackStatistics from './components/TrackStatistics';
 
 /**
  * 车辆轨迹显示页面组件
@@ -30,8 +29,6 @@ const VehicleTrackDisplayPage: React.FC = () => {
         dateRange={dateRange}
         trackData={trackData}
       />
-
-      <TrackStatistics trackData={trackData} />
     </Space>
   );
 };

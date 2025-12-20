@@ -34,3 +34,4 @@ const MapBoundsUpdater: React.FC<IMapBoundsUpdaterProps> = ({ bounds }) => {
 
 export default MapBoundsUpdater;
 
+

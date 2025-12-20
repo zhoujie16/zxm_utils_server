@@ -46,49 +46,54 @@ const RootLayout: React.FC = () => {
 };
 
 // 路由配置
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      element: <RootLayout />,
+      children: [
+        {
+          path: '/',
+          element: <Navigate to="/home" replace />,
+        },
+        {
+          path: '/login',
+          element: (
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: '/home',
+          element: (
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '/vehicle-trip',
+          element: (
+            <ProtectedRoute>
+              <VehicleTripPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '/vehicle-track',
+          element: (
+            <ProtectedRoute>
+              <VehicleTrackPage />
+            </ProtectedRoute>
+          ),
+        },
+      ],
+    },
+  ],
   {
-    element: <RootLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Navigate to="/home" replace />,
-      },
-      {
-        path: '/login',
-        element: (
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: '/home',
-        element: (
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/vehicle-trip',
-        element: (
-          <ProtectedRoute>
-            <VehicleTripPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/vehicle-track',
-        element: (
-          <ProtectedRoute>
-            <VehicleTrackPage />
-          </ProtectedRoute>
-        ),
-      },
-    ],
-  },
-]);
+    basename: '/zxm-toolkit-client',
+  }
+);
 
 // 路由提供者组件
 export const AppRouter: React.FC = () => {

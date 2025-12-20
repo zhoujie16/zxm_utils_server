@@ -67,15 +67,15 @@ export interface IVehicleTrack {
   /** ID */
   id: number;
   /** 外部系统ID */
-  externalId: number;
+  externalId?: number;
   /** 车辆ID */
-  vehicleId: number;
+  vehicleId?: number;
   /** 设备ID */
   deviceId: string;
   /** 纬度 */
-  latitude: number;
+  lat: number;
   /** 经度 */
-  longitude: number;
+  lng: number;
   /** 速度（km/h） */
   speed: number;
   /** 方向角（度） */

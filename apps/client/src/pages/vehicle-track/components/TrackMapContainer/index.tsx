@@ -1,12 +1,14 @@
 /**
- * 轨迹地图容器组件
- * 功能：包含地图展示、加载状态、错误处理等逻辑
+ * @fileoverview 轨迹地图容器组件
+ * @author Claude
+ * @created 2024-01-01
  */
+
 import React from 'react';
-import { Card } from 'antd';
 import type { Dayjs } from 'dayjs';
 import { TrackMap } from '@shared-components/track-map';
 import type { IVehicleTrack } from '@shared-components/track-map';
+import './index.less';
 
 /**
  * 轨迹地图容器组件 Props
@@ -33,9 +35,9 @@ const TrackMapContainer: React.FC<ITrackMapContainerProps> = ({
     dateRange && dateRange[0] && dateRange[1] ? trackData : [];
 
   return (
-    <Card>
+    <div className="track-map-container">
       <TrackMap trackData={resolvedTrackData} />
-    </Card>
+    </div>
   );
 };
 

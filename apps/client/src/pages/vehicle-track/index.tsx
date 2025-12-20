@@ -8,7 +8,6 @@ import React from 'react';
 import { useTrackDisplay } from './hooks/useTrackDisplay';
 import TrackDisplayToolbar from './components/TrackDisplayToolbar';
 import TrackMapContainer from './components/TrackMapContainer';
-import TrackStatistics from './components/TrackStatistics';
 import './index.less';
 
 /**
@@ -20,13 +19,6 @@ const VehicleTrackPage: React.FC = () => {
   return (
     <div className="vehicle-track-page">
       <div className="vehicle-track-page__container">
-        <TrackDisplayToolbar
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          onRefresh={refresh}
-          loading={isLoading}
-        />
-
         <TrackMapContainer
           loading={isLoading}
           error={error}
@@ -34,7 +26,13 @@ const VehicleTrackPage: React.FC = () => {
           trackData={trackData}
         />
 
-        <TrackStatistics trackData={trackData} />
+        <TrackDisplayToolbar
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+          onRefresh={refresh}
+          loading={isLoading}
+          trackData={trackData}
+        />
       </div>
     </div>
   );

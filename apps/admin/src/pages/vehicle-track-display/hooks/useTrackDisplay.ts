@@ -3,7 +3,7 @@
  * 功能：管理车辆轨迹地图显示的数据获取逻辑，支持一次性加载所有轨迹数据
  */
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import type { Dayjs } from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import type { IVehicleTrack } from '@shared-components/track-map';
 import type { IQueryTrackParams } from '@/types';
 import { getTrackList } from '@zxm-toolkit/http-client';
@@ -31,7 +31,11 @@ export interface IUseTrackDisplayReturn {
  * @returns Hook 返回值
  */
 export const useTrackDisplay = (): IUseTrackDisplayReturn => {
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
+  // 默认选择今天的时间范围
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>([
+    dayjs().startOf('day'),
+    dayjs().endOf('day'),
+  ]);
   const [trackData, setTrackData] = useState<IVehicleTrack[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

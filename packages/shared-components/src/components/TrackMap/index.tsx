@@ -4,13 +4,21 @@
  * @created 2024-01-01
  */
 
-import React, { useMemo } from 'react';
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
+import React from 'react';
+import { MapContainer } from 'react-leaflet';
 import type { IVehicleTrack } from '../../types/vehicle-track';
-import { convertTrackToPositions, calculateMapBounds, formatTime } from '../../utils/trackUtils';
+import { useTrackData } from './hooks/useTrackData';
+import { useMapProvider, type MapProvider } from './hooks/useMapProvider';
+import { useMapViewType, type MapViewType } from './hooks/useMapViewType';
+import MapControlPanel from './MapControlPanel';
+import TileLayerRenderer from './TileLayerRenderer';
 import MapBoundsUpdater from './MapBoundsUpdater';
+import TrackPolyline from './TrackPolyline';
+import StartMarker from './StartMarker';
+import EndMarker from './EndMarker';
 import '../../utils/leafletConfig';
 import 'leaflet/dist/leaflet.css';
+import './index.less';
 
 /**
  * 轨迹地图组件 Props
@@ -26,107 +34,75 @@ export interface ITrackMapProps {
   lineWeight?: number;
   /** 轨迹线透明度（可选，默认 0.8） */
   lineOpacity?: number;
+  /** 天地图 API 密钥（可选，使用天地图时必须提供，需在天地图官网申请：http://lbs.tianditu.gov.cn/） */
+  tiandituApiKey?: string;
+  /** 高德地图 API 密钥（可选，虽然无 key 也能访问，但建议提供以确保稳定性和合规性，需在高德开放平台申请：https://console.amap.com/） */
+  gaodeApiKey?: string;
 }
+
+/**
+ * 格式化高度值
+ * @param height 高度值（数字或字符串）
+ * @returns 格式化后的高度字符串
+ */
+const formatHeight = (height: number | string): string => {
+  return typeof height === 'number' ? `${height}px` : height;
+};
 
 /**
  * 轨迹地图组件
  * 功能：在地图上显示车辆轨迹，自动计算边界、起点和终点
  */
 const TrackMap: React.FC<ITrackMapProps> = ({
-  trackData,
+  trackData = [],
   height = 600,
   lineColor = '#1890ff',
   lineWeight = 3,
   lineOpacity = 0.8,
+  tiandituApiKey,
+  gaodeApiKey,
 }) => {
-  /**
-   * 将轨迹数据转换为地图坐标数组
-   */
-  const positions = useMemo(() => {
-    return convertTrackToPositions(trackData);
-  }, [trackData]);
+  // 使用 hooks 管理数据
+  const { positions, bounds, startPoint, endPoint, defaultCenter } = useTrackData(trackData);
+  const { mapProvider, setMapProvider } = useMapProvider('gaode');
+  const { mapViewType, toggleMapViewType } = useMapViewType('normal');
 
-  /**
-   * 计算地图边界
-   */
-  const bounds = useMemo(() => {
-    return calculateMapBounds(positions);
-  }, [positions]);
-
-  /**
-   * 获取起点和终点
-   */
-  const startPoint = trackData[0];
-  const endPoint = trackData[trackData.length - 1];
-
-  /**
-   * 默认地图中心（上海）
-   */
-  const defaultCenter: [number, number] = positions.length > 0
-    ? (positions[0] as [number, number])
-    : [31.1948, 121.5449];
-
-  /**
-   * 格式化高度
-   */
-  const mapHeight = typeof height === 'number' ? `${height}px` : height;
+  const mapHeight = formatHeight(height);
 
   return (
-    <div style={{ height: mapHeight, width: '100%', position: 'relative' }}>
+    <div className="track-map-container" style={{ height: mapHeight }}>
+      <MapControlPanel
+        mapProvider={mapProvider}
+        onMapProviderChange={setMapProvider}
+        mapViewType={mapViewType}
+        onMapViewTypeToggle={toggleMapViewType}
+      />
       <MapContainer
         center={defaultCenter}
         zoom={13}
-        style={{ height: '100%', width: '100%' }}
+        className="track-map"
         zoomControl={true}
         scrollWheelZoom={true}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <TileLayerRenderer
+          mapProvider={mapProvider}
+          mapViewType={mapViewType}
+          tiandituApiKey={tiandituApiKey}
+          gaodeApiKey={gaodeApiKey}
         />
         <MapBoundsUpdater bounds={bounds} />
-
-        {/* 绘制轨迹线 */}
-        {positions.length > 1 && (
-          <Polyline
-            positions={positions}
-            color={lineColor}
-            weight={lineWeight}
-            opacity={lineOpacity}
-          />
-        )}
-
-        {/* 起点标记 */}
-        {startPoint && (
-          <Marker position={[startPoint.lat, startPoint.lng]}>
-            <Popup>
-              <div>
-                <div style={{ fontWeight: 500, marginBottom: 4 }}>起点</div>
-                <div>时间：{formatTime(startPoint.gpsTime)}</div>
-                <div>速度：{startPoint.gpsSpeed} km/h</div>
-                <div>坐标：({startPoint.lat.toFixed(6)}, {startPoint.lng.toFixed(6)})</div>
-              </div>
-            </Popup>
-          </Marker>
-        )}
-
-        {/* 终点标记 */}
-        {endPoint && endPoint.id !== startPoint?.id && (
-          <Marker position={[endPoint.lat, endPoint.lng]}>
-            <Popup>
-              <div>
-                <div style={{ fontWeight: 500, marginBottom: 4 }}>终点</div>
-                <div>时间：{formatTime(endPoint.gpsTime)}</div>
-                <div>速度：{endPoint.gpsSpeed} km/h</div>
-                <div>坐标：({endPoint.lat.toFixed(6)}, {endPoint.lng.toFixed(6)})</div>
-              </div>
-            </Popup>
-          </Marker>
-        )}
+        <TrackPolyline
+          positions={positions}
+          color={lineColor}
+          weight={lineWeight}
+          opacity={lineOpacity}
+        />
+        <StartMarker startPoint={startPoint} />
+        <EndMarker endPoint={endPoint} startPoint={startPoint} />
       </MapContainer>
     </div>
   );
 };
 
 export default TrackMap;
-
+export type { MapProvider, MapViewType };

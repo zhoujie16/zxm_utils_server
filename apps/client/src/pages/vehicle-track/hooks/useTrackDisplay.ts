@@ -21,7 +21,7 @@ export interface IUseTrackDisplayReturn {
   /** 错误信息 */
   error: Error | null;
   /** 刷新数据 */
-  refresh: () => void;
+  refresh: () => Promise<ISharedVehicleTrack[]>;
   /** 时间范围 */
   dateRange: [Dayjs | null, Dayjs | null] | null;
   /** 设置时间范围 */
@@ -31,17 +31,27 @@ export interface IUseTrackDisplayReturn {
 /**
  * 将 http-client 的 IVehicleTrack 转换为 shared-components 的 IVehicleTrack
  */
-function convertToSharedTrack(track: IVehicleTrack): ISharedVehicleTrack {
+function convertToSharedTrack(track: IVehicleTrack): ISharedVehicleTrack | null {
+  // 确保坐标有效
+  if (
+    typeof track.lat !== 'number' ||
+    typeof track.lng !== 'number' ||
+    isNaN(track.lat) ||
+    isNaN(track.lng)
+  ) {
+    return null;
+  }
+
   return {
     id: track.id,
     imei: track.deviceId || '',
-    direction: track.direction,
+    direction: track.direction || 0,
     gateTime: track.timestamp,
     gpsMode: 0, // 默认值，如果 API 没有返回
-    gpsSpeed: track.speed,
+    gpsSpeed: track.speed || 0,
     gpsTime: track.timestamp,
-    lat: track.latitude,
-    lng: track.longitude,
+    lat: track.lat,
+    lng: track.lng,
     posMethod: 0, // 默认值
     posMulFlag: 0, // 默认值
     posType: 0, // 默认值
@@ -56,7 +66,11 @@ function convertToSharedTrack(track: IVehicleTrack): ISharedVehicleTrack {
  * @returns Hook 返回值
  */
 export const useTrackDisplay = (): IUseTrackDisplayReturn => {
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
+  // 默认选择今天的时间范围
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>([
+    dayjs().startOf('day'),
+    dayjs().endOf('day'),
+  ]);
   const [trackData, setTrackData] = useState<ISharedVehicleTrack[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -91,7 +105,13 @@ export const useTrackDisplay = (): IUseTrackDisplayReturn => {
       });
 
       if (response?.data) {
-        const convertedData = response.data.map(convertToSharedTrack);
+        const convertedData = response.data
+          .map(convertToSharedTrack)
+          .filter((item): item is ISharedVehicleTrack => item !== null);
+        // 调试信息：检查转换后的数据
+        if (convertedData.length === 0 && response.data.length > 0) {
+          console.warn('轨迹数据转换后为空，原始数据示例:', response.data[0]);
+        }
         allData.push(...convertedData);
         const totalPages = response.pagination?.totalPages || 0;
         hasMore = page < totalPages;
@@ -107,10 +127,10 @@ export const useTrackDisplay = (): IUseTrackDisplayReturn => {
   /**
    * 加载数据
    */
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (): Promise<ISharedVehicleTrack[]> => {
     if (!queryParams) {
       setTrackData([]);
-      return;
+      return [];
     }
 
     setIsLoading(true);
@@ -121,10 +141,12 @@ export const useTrackDisplay = (): IUseTrackDisplayReturn => {
       // 按 gpsTime 排序（从早到晚）
       data.sort((a, b) => a.gpsTime - b.gpsTime);
       setTrackData(data);
+      return data;
     } catch (err) {
       const error = err instanceof Error ? err : new Error('获取轨迹数据失败');
       setError(error);
       setTrackData([]);
+      return [];
     } finally {
       setIsLoading(false);
     }
@@ -140,8 +162,8 @@ export const useTrackDisplay = (): IUseTrackDisplayReturn => {
   /**
    * 刷新数据
    */
-  const refresh = useCallback(() => {
-    loadData();
+  const refresh = useCallback(async (): Promise<ISharedVehicleTrack[]> => {
+    return await loadData();
   }, [loadData]);
 
   return {

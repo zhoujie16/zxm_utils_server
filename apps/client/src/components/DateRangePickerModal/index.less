@@ -1,0 +1,91 @@
+/**
+ * @fileoverview 时间范围选择弹窗样式
+ * @author Claude
+ * @created 2024-01-01
+ */
+
+@import '../../styles/variables.less';
+
+.date-range-picker-modal {
+  background: @card-background;
+  border-radius: @border-radius-lg @border-radius-lg 0 0;
+  padding: @spacing-lg;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  &__header {
+    margin-bottom: @spacing-lg;
+    text-align: center;
+  }
+
+  &__title {
+    font-size: @font-size-lg;
+    font-weight: 500;
+    color: @text-color;
+    margin: 0;
+  }
+
+  &__quick-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: @spacing-md;
+    margin-bottom: @spacing-xl;
+  }
+
+  &__quick-btn {
+    &--active {
+      background-color: @primary-color;
+      color: #ffffff;
+      border-color: @primary-color;
+    }
+  }
+
+  &__custom-section {
+    margin-bottom: @spacing-xl;
+  }
+
+  &__custom-label {
+    font-size: @font-size-base;
+    color: @text-secondary;
+    margin-bottom: @spacing-md;
+  }
+
+  &__date-pickers {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-md;
+  }
+
+  &__picker-item {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-sm;
+  }
+
+  &__picker-label {
+    font-size: @font-size-sm;
+    color: @text-secondary;
+  }
+
+  &__picker-button {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+    border: 1px solid @border-color;
+    border-radius: @border-radius-sm;
+    padding: @spacing-md;
+  }
+
+  &__actions {
+    display: flex;
+    gap: @spacing-md;
+    padding-top: @spacing-lg;
+    border-top: 1px solid @border-color;
+  }
+
+  &__cancel-btn,
+  &__confirm-btn {
+    flex: 1;
+  }
+}
+
