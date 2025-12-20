@@ -5,7 +5,8 @@
  */
 
 import React from 'react';
-import type { MapProvider, MapViewType } from '../hooks/useMapProvider';
+import type { MapProvider } from '../hooks/useMapProvider';
+import type { MapViewType } from '../hooks/useMapViewType';
 import './index.less';
 
 /**
