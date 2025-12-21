@@ -7,9 +7,7 @@
 import React from 'react';
 import type { MapProvider } from '../hooks/useMapProvider';
 import type { MapViewType } from '../hooks/useMapViewType';
-import BingTileLayer from '../BingTileLayer';
 import GaodeTileLayer from '../GaodeTileLayer';
-import GaodeLabelLayer from '../GaodeLabelLayer';
 
 /**
  * 瓦片层渲染器组件 Props
@@ -32,11 +30,7 @@ const TileLayerRenderer: React.FC<ITileLayerRendererProps> = ({
   mapViewType,
   gaodeApiKey,
 }) => {
-  // 根据地图提供商显示对应的瓦片层
-  if (mapProvider === 'bing') {
-    return <BingTileLayer mapType={mapViewType === 'normal' ? 'road' : 'satellite'} />;
-  }
-
+  // 目前仅支持高德地图
   if (mapProvider === 'gaode') {
     return (
       <>
@@ -44,8 +38,6 @@ const TileLayerRenderer: React.FC<ITileLayerRendererProps> = ({
           mapType={mapViewType === 'normal' ? 'road' : 'satellite'}
           apiKey={gaodeApiKey}
         />
-        {/* 高德地图卫星模式下显示文字标注 */}
-        {mapViewType === 'satellite' && <GaodeLabelLayer apiKey={gaodeApiKey} />}
       </>
     );
   }

@@ -10,6 +10,7 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "yarn workspace admin build && yarn workspace server build && yarn workspace client build",
+    "dev": "concurrently \"yarn dev:server\" \"yarn dev:admin\" \"yarn dev:client\"",
     "dev:admin": "yarn workspace admin dev",
     "dev:server": "yarn workspace server start:dev",
     "dev:client": "yarn workspace client dev",
@@ -20,7 +21,7 @@
     "install:all": "yarn install"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "prettier": "^3.4.2"
   }
 }
-

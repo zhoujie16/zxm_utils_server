@@ -42,7 +42,6 @@ const MapControlPanel: React.FC<IMapControlPanelProps> = ({
         className="track-map-provider-select"
         title="选择地图提供商"
       >
-        <option value="bing">必应地图</option>
         <option value="gaode">高德地图</option>
       </select>
 
