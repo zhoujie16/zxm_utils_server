@@ -47,14 +47,4 @@ export async function convertGcj02Coordinates(
   return post<IConvertCoordinateResponse>(`${BASE_URL}/convert-gcj02`, params || {});
 }
 
-/**
- * 批量转换 WGS84 坐标
- * @param params 转换参数（可选的时间范围）
- * @returns 转换结果响应
- */
-export async function convertWgs84Coordinates(
-  params?: IConvertCoordinateParams,
-): Promise<IConvertCoordinateResponse> {
-  return post<IConvertCoordinateResponse>(`${BASE_URL}/convert-wgs84`, params || {});
-}
 

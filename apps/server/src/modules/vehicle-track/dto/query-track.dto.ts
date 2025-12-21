@@ -4,7 +4,19 @@
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsInt, Min, Max, IsBoolean } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
+
+/**
+ * 自定义布尔转换器，正确处理字符串 "false" -> false
+ */
+const ToBoolean = () => {
+  return Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+    return Boolean(value);
+  });
+};
 
 export class QueryTrackDto {
   @ApiProperty({
@@ -59,17 +71,7 @@ export class QueryTrackDto {
     required: false,
   })
   @IsOptional()
-  @Type(() => Boolean)
+  @ToBoolean()
   @IsBoolean({ message: 'missingGcj02 必须是布尔值' })
   missingGcj02?: boolean;
-
-  @ApiProperty({
-    description: '筛选缺少 WGS84 坐标的数据（lat 和 lng 存在，但 lat_wgs84 或 lng_wgs84 为 null）',
-    example: false,
-    required: false,
-  })
-  @IsOptional()
-  @Type(() => Boolean)
-  @IsBoolean({ message: 'missingWgs84 必须是布尔值' })
-  missingWgs84?: boolean;
 }

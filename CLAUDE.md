@@ -13,6 +13,9 @@ zxm-toolkit-admin/
 ├── apps/
 │   ├── admin/          # 前端管理后台 (UmiJS + React + Ant Design)
 │   └── server/         # 后端 API 服务 (NestJS + TypeScript + SQLite)
+├── packages/
+│   ├── http-client/    # HTTP 客户端共享包
+│   └── shared-components/ # 共享组件包
 ├── doc-server-api/     # API 接口文档
 ├── .cursor/rules/      # 开发规范和约定
 └── package.json        # 根配置文件 (Yarn Workspaces)
@@ -31,12 +34,12 @@ yarn install
 # 启动前端开发服务器（端口 8008）
 yarn dev:admin
 
-# 启动后端开发服务器（端口 7031）
+# 启动后端开发服务器（端口 8010）
 yarn dev:server
 
 # 或分别在各自目录启动：
 cd apps/admin && yarn dev        # 前端访问：http://localhost:8008
-cd apps/server && yarn start:dev # 后端 API：http://localhost:7031/api
+cd apps/server && yarn start:dev # 后端 API：http://localhost:8010/api
 ```
 
 ### 构建打包
@@ -69,6 +72,59 @@ yarn format
 cd apps/server && yarn lint
 ```
 
+## 核心功能模块
+
+### 1. 车辆轨迹管理 (Vehicle Track)
+**路径**: `apps/server/src/modules/vehicle-track/`, `apps/admin/src/pages/vehicle-track/`
+
+**功能概述**:
+- 车辆轨迹数据的同步、查询和坐标转换
+- 支持从外部 API（途强）同步轨迹数据
+- 支持百度坐标系(BD-09)到高德坐标系(GCJ-02)的批量转换
+- 提供轨迹数据的分页查询和时间范围筛选
+
+**关键特性**:
+- 数据同步：支持指定时间范围的轨迹数据批量同步
+- 坐标转换：批量将 BD-09 坐标转换为 GCJ-02 坐标
+- 数据查询：支持分页、时间筛选和缺失坐标筛选
+- 延迟加载：Tab 组件按需加载数据，提升性能
+
+**API 端点**:
+- `GET /api/vehicle-track` - 查询轨迹数据列表
+- `POST /api/vehicle-track/sync` - 同步轨迹数据
+- `POST /api/vehicle-track/convert-gcj02` - 批量转换 GCJ-02 坐标
+
+**坐标系支持**:
+- BD-09：百度地图坐标系（原始数据）
+- GCJ-02：高德地图坐标系（通过转换获得）
+
+### 2. 车辆行程管理 (Vehicle Trip)
+**路径**: `apps/server/src/modules/vehicle-trip/`, `apps/admin/src/pages/vehicle-trip/`
+
+**功能概述**:
+- 车辆行程数据的同步和管理
+- 支持从外部 API 同步行程数据
+
+### 3. 通用配置管理 (Common Config)
+**路径**: `apps/server/src/modules/common-config/`, `apps/admin/src/pages/common-config/`
+
+**功能概述**:
+- 系统配置的增删改查管理
+- 支持配置项的启用/禁用状态管理
+- 支持排序和分类管理
+
+**重要配置项**:
+- `TuQiangToken`：途强 API 访问令牌
+- `BaiduMapApiKey`：百度地图 API 密钥（用于坐标转换）
+
+### 4. 用户认证系统 (Authentication)
+**路径**: `apps/server/src/modules/auth/`, `apps/admin/src/pages/login/`
+
+**功能概述**:
+- 基于 JWT 的身份认证
+- 用户登录和权限管理
+- HTTP-only Cookie 存储 Token
+
 ## 架构概览
 
 ### 前端 (apps/admin)
@@ -78,12 +134,13 @@ cd apps/server && yarn lint
 - **构建工具**: Mako 极速构建
 - **样式**: Less + CSS-in-JS
 
-主要目录：
-- `src/pages/`: 页面组件
+**主要目录**:
+- `src/pages/`: 页面组件（车辆轨迹、车辆行程、通用配置等）
 - `src/components/`: 可复用组件
 - `src/services/`: API 服务函数
 - `src/utils/`: 工具函数
 - `src/types/`: TypeScript 类型定义
+- `src/hooks/`: 自定义 React Hooks
 - `config/`: UmiJS 配置，包括代理设置
 
 ### 后端 (apps/server)
@@ -93,14 +150,37 @@ cd apps/server && yarn lint
 - **认证**: JWT 认证
 - **API 文档**: Swagger/OpenAPI（仅开发环境）
 
-主要目录：
-- `src/modules/`: 业务模块（demo、login 等）
-- `src/common/`: 公共模块（auth、guards 等）
+**主要目录**:
+- `src/modules/`: 业务模块（vehicle-track、vehicle-trip、common-config、auth、login、demo）
+- `src/common/`: 公共模块（auth、guards、decorators 等）
 - `src/config/`: 配置文件
 - `src/types/`: 类型定义
 
-### 环境配置
+### HTTP 客户端包 (packages/http-client)
+- 提供统一的 API 调用接口
+- 包含所有后端 API 的类型定义
+- 提供自定义 React Hooks 用于数据获取
+- 支持车辆轨迹、车辆行程、通用配置等模块的 API 调用
 
+### 共享组件包 (packages/shared-components)
+- 提供跨项目的可复用 React 组件
+- 包含轨迹地图显示组件
+- 支持多种坐标系的地图展示
+
+## 坐标系统
+
+### 支持的坐标系
+1. **BD-09 (百度坐标系)**：外部 API 提供的原始坐标
+2. **GCJ-02 (高德坐标系)**：通过百度地图 API 转换获得
+
+### 坐标转换流程
+1. 数据同步时保存 BD-09 坐标
+2. 通过坐标转换功能批量转换为 GCJ-02 坐标
+3. 地图显示时根据需要选择合适的坐标系
+
+## 环境配置
+
+### 数据库配置
 1. 复制环境文件：
 ```bash
 cd apps/server && cp env.example .env
@@ -112,9 +192,13 @@ cd apps/server && cp env.example .env
    - 管理员账号密码
    - CORS 设置
 
+### API 配置
+- 途强 Token：用于车辆轨迹数据同步
+- 百度地图 API Key：用于坐标转换
+
 ### API 文档
-- 开发环境：http://localhost:7031/docs
-- API 接口地址：http://localhost:7031/api
+- 开发环境：http://localhost:8010/docs
+- API 接口地址：http://localhost:8010/api
 
 ## 开发规范
 
@@ -142,6 +226,7 @@ cd apps/server && cp env.example .env
 ### 文件组织规范
 - 每个文件顶部必须包含文件说明注释
 - 单个代码文件不应超过 300 行，超出应进行拆分
+- 模块化设计，功能相关的代码放在同一目录
 
 ### 版本控制规范
 - 不要自动提交 Git，除非特别要求
@@ -161,12 +246,30 @@ cd apps/server && cp env.example .env
 - 开发环境 `SQLITE_SYNCHRONIZE=true` 自动同步结构
 - 生产环境设置 `SQLITE_SYNCHRONIZE=false` 并使用迁移
 
+### 主要数据表
+- `vehicle_track`：车辆轨迹数据
+- `vehicle_trip`：车辆行程数据
+- `common_configs`：通用配置数据
+- `demo`：演示数据
+
 ## 认证系统
 
 - 基于 JWT 的身份认证
 - Token 存储在 HTTP-only Cookie 中
 - 默认管理员账号可通过环境变量配置
 - JWT 默认 7 天过期（可配置）
+
+## 外部 API 集成
+
+### 途强 API
+- 用于车辆轨迹数据同步
+- 需要配置有效的 Token
+- 支持指定时间范围的数据同步
+
+### 百度地图 API
+- 用于坐标系转换
+- 支持 BD-09 到 GCJ-02 的转换
+- 需要配置有效的 API Key
 
 ## 测试
 
@@ -181,3 +284,18 @@ cd apps/server && cp env.example .env
 - 使用强 JWT 密钥
 - 配置正确的 CORS 来源
 - API 文档在生产环境自动禁用
+- 确保所有外部 API 密钥已正确配置
+
+
+## 项目特色
+
+1. **模块化架构**：采用 Monorepo 架构，前后端分离，共享 HTTP 客户端
+2. **坐标系统管理**：专业的坐标转换和数据管理功能
+3. **高性能构建**：前端使用 Mako 构建工具，构建速度快
+4. **类型安全**：全栈 TypeScript，严格的类型检查
+5. **延迟加载**：前端组件按需加载，优化性能
+6. **RESTful API**：标准的 REST API 设计，易于集成
+
+## 联系方式
+
+如有问题或建议，请通过项目仓库进行反馈。

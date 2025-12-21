@@ -80,10 +80,6 @@ export interface IVehicleTrack {
   lat_gcj02?: number | null;
   /** GCJ-02坐标系经度（高德地图），可选 */
   lng_gcj02?: number | null;
-  /** WGS84坐标系纬度（GPS标准），可选 */
-  lat_wgs84?: number | null;
-  /** WGS84坐标系经度（GPS标准），可选 */
-  lng_wgs84?: number | null;
   /** 速度（km/h） */
   speed: number;
   /** 方向角（度） */
@@ -110,8 +106,6 @@ export interface IQueryTrackParams {
   endTime?: number;
   /** 筛选缺少 GCJ-02 坐标的数据 */
   missingGcj02?: boolean;
-  /** 筛选缺少 WGS84 坐标的数据 */
-  missingWgs84?: boolean;
 }
 
 /**
