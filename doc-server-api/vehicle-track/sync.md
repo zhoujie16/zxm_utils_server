@@ -169,15 +169,20 @@ console.log(`同步结果: ${message}`);
    - gpsTime: GPS时间
    - lat: BD-09坐标系纬度（百度地图）
    - lng: BD-09坐标系经度（百度地图）
-   - lat_gcj02: GCJ-02坐标系纬度（高德地图），通过百度坐标转换API自动转换，转换失败时为 null
-   - lng_gcj02: GCJ-02坐标系经度（高德地图），通过百度坐标转换API自动转换，转换失败时为 null
+   - lat_gcj02: GCJ-02坐标系纬度（高德地图），新数据为 null，需要通过批量转换接口填充
+   - lng_gcj02: GCJ-02坐标系经度（高德地图），新数据为 null，需要通过批量转换接口填充
+   - lat_wgs84: WGS84坐标系纬度（GPS标准），新数据为 null，需要通过批量转换接口填充
+   - lng_wgs84: WGS84坐标系经度（GPS标准），新数据为 null，需要通过批量转换接口填充
    - posMethod: 定位方法
    - posMulFlag: 定位多重标志
    - posType: 定位类型
    - precision: 精度
 
 7. **坐标转换**: 
-   - 系统会自动调用百度地图坐标转换API，将百度坐标系（BD-09）转换为GCJ-02坐标系（高德地图）
-   - 转换结果保存在 `lat_gcj02` 和 `lng_gcj02` 字段中
-   - 需要在 `common-config` 表中配置 `BaiduMapApiKey` 配置项，否则坐标转换会跳过
-   - 如果坐标转换失败，`lat_gcj02` 和 `lng_gcj02` 字段会保存为 `null`，不影响其他数据的保存
+   - 同步接口只保存原始数据（BD-09坐标系），不再自动进行坐标转换
+   - 新同步的数据，`lat_gcj02`、`lng_gcj02`、`lat_wgs84`、`lng_wgs84` 字段会保存为 `null`
+   - 如果数据已存在，会保留已有的坐标值（不会被覆盖）
+   - 坐标转换需要通过批量转换接口单独处理：
+     - 使用 `POST /api/vehicle-track/convert-gcj02` 批量转换 GCJ-02 坐标
+     - 使用 `POST /api/vehicle-track/convert-wgs84` 批量转换 WGS84 坐标
+   - 详细说明请参考坐标转换接口文档

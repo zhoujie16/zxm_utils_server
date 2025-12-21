@@ -40,6 +40,55 @@ export const bd09ToGcj02 = (bdLat: number, bdLng: number): [number, number] => {
 };
 
 /**
+ * 将火星坐标系（GCJ-02）转换为WGS84坐标系
+ * 
+ * 注意：算法转换存在精度限制，通常会有1-5米的误差，这是正常现象。
+ * 如果需要更高精度，建议使用专业的坐标转换API。
+ * 
+ * @param gcjLat GCJ-02纬度
+ * @param gcjLng GCJ-02经度
+ * @returns [WGS84纬度, WGS84经度]
+ */
+export const gcj02ToWgs84 = (gcjLat: number, gcjLng: number): [number, number] => {
+  const a = 6378245.0; // 长半轴
+  const ee = 0.00669342162296594323; // 偏心率平方
+  
+  let dLat = transformLat(gcjLng - 105.0, gcjLat - 35.0);
+  let dLng = transformLng(gcjLng - 105.0, gcjLat - 35.0);
+  const radLat = (gcjLat / 180.0) * Math.PI;
+  let magic = Math.sin(radLat);
+  magic = 1 - ee * magic * magic;
+  const sqrtMagic = Math.sqrt(magic);
+  dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * Math.PI);
+  dLng = (dLng * 180.0) / (a / sqrtMagic * Math.cos(radLat) * Math.PI);
+  const wgsLat = gcjLat - dLat;
+  const wgsLng = gcjLng - dLng;
+  return [wgsLat, wgsLng];
+};
+
+/**
+ * 纬度转换辅助函数
+ */
+const transformLat = (lng: number, lat: number): number => {
+  let ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat + 0.2 * Math.sqrt(Math.abs(lng));
+  ret += ((20.0 * Math.sin(6.0 * lng * Math.PI) + 20.0 * Math.sin(2.0 * lng * Math.PI)) * 2.0) / 3.0;
+  ret += ((20.0 * Math.sin(lat * Math.PI) + 40.0 * Math.sin(lat / 3.0 * Math.PI)) * 2.0) / 3.0;
+  ret += ((160.0 * Math.sin(lat / 12.0 * Math.PI) + 320 * Math.sin(lat * Math.PI / 30.0)) * 2.0) / 3.0;
+  return ret;
+};
+
+/**
+ * 经度转换辅助函数
+ */
+const transformLng = (lng: number, lat: number): number => {
+  let ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * Math.sqrt(Math.abs(lng));
+  ret += ((20.0 * Math.sin(6.0 * lng * Math.PI) + 20.0 * Math.sin(2.0 * lng * Math.PI)) * 2.0) / 3.0;
+  ret += ((20.0 * Math.sin(lng * Math.PI) + 40.0 * Math.sin(lng / 3.0 * Math.PI)) * 2.0) / 3.0;
+  ret += ((150.0 * Math.sin(lng / 12.0 * Math.PI) + 300.0 * Math.sin(lng / 30.0 * Math.PI)) * 2.0) / 3.0;
+  return ret;
+};
+
+/**
  * 将轨迹数据转换为地图坐标数组（优先使用GCJ-02坐标，否则自动转换百度坐标系为火星坐标系）
  * @param trackData 轨迹数据数组
  * @returns 地图坐标数组（火星坐标系 GCJ-02）

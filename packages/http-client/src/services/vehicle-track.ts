@@ -10,6 +10,8 @@ import type {
   ITrackListResponse,
   ISyncTrackParams,
   ISyncTrackResponse,
+  IConvertCoordinateParams,
+  IConvertCoordinateResponse,
 } from '../api-types';
 
 const BASE_URL = '/vehicle-track';
@@ -32,5 +34,27 @@ export async function getTrackList(params: IQueryTrackParams): Promise<ITrackLis
  */
 export async function syncTrackData(params: ISyncTrackParams): Promise<ISyncTrackResponse> {
   return post<ISyncTrackResponse>(`${BASE_URL}/sync`, params);
+}
+
+/**
+ * 批量转换 GCJ-02 坐标
+ * @param params 转换参数（可选的时间范围）
+ * @returns 转换结果响应
+ */
+export async function convertGcj02Coordinates(
+  params?: IConvertCoordinateParams,
+): Promise<IConvertCoordinateResponse> {
+  return post<IConvertCoordinateResponse>(`${BASE_URL}/convert-gcj02`, params || {});
+}
+
+/**
+ * 批量转换 WGS84 坐标
+ * @param params 转换参数（可选的时间范围）
+ * @returns 转换结果响应
+ */
+export async function convertWgs84Coordinates(
+  params?: IConvertCoordinateParams,
+): Promise<IConvertCoordinateResponse> {
+  return post<IConvertCoordinateResponse>(`${BASE_URL}/convert-wgs84`, params || {});
 }
 

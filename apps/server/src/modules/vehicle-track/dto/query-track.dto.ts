@@ -3,7 +3,7 @@
  * 用于查询车辆轨迹数据列表，支持分页和时间范围筛选
  */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsInt, Min, Max } from 'class-validator';
+import { IsOptional, IsInt, Min, Max, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class QueryTrackDto {
@@ -52,4 +52,24 @@ export class QueryTrackDto {
   @Type(() => Number)
   @IsInt({ message: '结束时间必须是整数' })
   endTime?: number;
+
+  @ApiProperty({
+    description: '筛选缺少 GCJ-02 坐标的数据（lat 和 lng 存在，但 lat_gcj02 或 lng_gcj02 为 null）',
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean({ message: 'missingGcj02 必须是布尔值' })
+  missingGcj02?: boolean;
+
+  @ApiProperty({
+    description: '筛选缺少 WGS84 坐标的数据（lat 和 lng 存在，但 lat_wgs84 或 lng_wgs84 为 null）',
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean({ message: 'missingWgs84 必须是布尔值' })
+  missingWgs84?: boolean;
 }

@@ -80,6 +80,10 @@ export interface IVehicleTrack {
   lat_gcj02?: number | null;
   /** GCJ-02坐标系经度（高德地图），可选 */
   lng_gcj02?: number | null;
+  /** WGS84坐标系纬度（GPS标准），可选 */
+  lat_wgs84?: number | null;
+  /** WGS84坐标系经度（GPS标准），可选 */
+  lng_wgs84?: number | null;
   /** 速度（km/h） */
   speed: number;
   /** 方向角（度） */
@@ -104,6 +108,10 @@ export interface IQueryTrackParams {
   startTime?: number;
   /** 结束时间（时间戳，毫秒） */
   endTime?: number;
+  /** 筛选缺少 GCJ-02 坐标的数据 */
+  missingGcj02?: boolean;
+  /** 筛选缺少 WGS84 坐标的数据 */
+  missingWgs84?: boolean;
 }
 
 /**
@@ -129,7 +137,29 @@ export interface ISyncTrackResponse {
   success: number;
   /** 失败的记录数 */
   failed: number;
-  /** 同步结果消息 */
+  /** 结果消息 */
+  message: string;
+}
+
+/**
+ * 转换坐标请求参数类型
+ */
+export interface IConvertCoordinateParams {
+  /** 开始时间（时间戳，毫秒），可选 */
+  startTime?: number;
+  /** 结束时间（时间戳，毫秒），可选 */
+  endTime?: number;
+}
+
+/**
+ * 转换坐标响应类型
+ */
+export interface IConvertCoordinateResponse {
+  /** 成功转换的记录数 */
+  success: number;
+  /** 失败的记录数 */
+  failed: number;
+  /** 结果消息 */
   message: string;
 }
 

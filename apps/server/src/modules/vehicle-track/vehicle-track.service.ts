@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import { VehicleTrack } from './vehicle-track.entity';
 import { SyncTrackDto } from './dto/sync-track.dto';
 import { QueryTrackDto } from './dto/query-track.dto';
+import { ConvertCoordinateDto } from './dto/convert-coordinate.dto';
 import { CommonConfigService } from '../common-config/common-config.service';
 
 @Injectable()
@@ -118,38 +119,88 @@ export class VehicleTrackService {
   }
 
   /**
-   * 将百度坐标系（BD-09）转换为GCJ-02坐标系（高德地图）
-   * @param bdLat 百度纬度
-   * @param bdLng 百度经度
-   * @returns GCJ-02坐标 [纬度, 经度]，转换失败返回 null
+   * 批量将百度坐标系（BD-09）转换为GCJ-02坐标系（高德地图）
+   * @param coordinates 坐标数组，格式：[[纬度, 经度], ...]，最多100个
+   * @returns GCJ-02坐标数组，格式：[[纬度, 经度], ...]，转换失败的位置为 null
    */
-  private async convertBaiduToGcj02(bdLat: number, bdLng: number): Promise<[number, number] | null> {
+  private async convertBaiduToGcj02Batch(
+    coordinates: [number, number][],
+  ): Promise<([number, number] | null)[]> {
+    if (coordinates.length === 0) {
+      return [];
+    }
+
     try {
       // 从配置表读取百度地图API Key
       const config = await this.commonConfigService.findByKey('BaiduMapApiKey');
       if (!config || !config.isEnabled || !config.configValue) {
         console.warn('百度地图API Key配置不存在或未启用，跳过坐标转换');
-        return null;
+        return coordinates.map(() => null);
       }
 
       const apiKey = config.configValue;
+      // 构建坐标字符串：lng1,lat1;lng2,lat2;...
+      const coordsStr = coordinates.map(([lat, lng]) => `${lng},${lat}`).join(';');
       // 百度坐标转换API：from=5表示BD-09，to=3表示GCJ-02
-      const url = `https://api.map.baidu.com/geoconv/v1/?coords=${bdLng},${bdLat}&from=5&to=3&ak=${apiKey}`;
+      const url = `https://api.map.baidu.com/geoconv/v1/?coords=${coordsStr}&from=5&to=3&ak=${apiKey}`;
 
       const response = await axios.get(url, {
-        timeout: 5000, // 5秒超时
+        timeout: 60000, // 60秒超时（批量转换可能需要更长时间）
       });
 
       if (response.data.status === 0 && response.data.result && response.data.result.length > 0) {
-        const result = response.data.result[0];
-        return [result.y, result.x]; // 返回 [纬度, 经度]
+        // 返回结果数组，每个元素对应一个坐标的转换结果
+        return response.data.result.map((result: any) => [result.y, result.x] as [number, number]);
       } else {
         console.error(`百度坐标转换API返回错误: ${response.data.message || '未知错误'}`);
-        return null;
+        return coordinates.map(() => null);
       }
     } catch (error) {
-      console.error(`百度坐标转换失败 (lat: ${bdLat}, lng: ${bdLng}):`, error.message);
-      return null;
+      console.error(`批量百度坐标转换失败:`, error.message);
+      return coordinates.map(() => null);
+    }
+  }
+
+  /**
+   * 批量将GCJ-02坐标系（高德地图）转换为WGS84坐标系（GPS标准）
+   * @param coordinates 坐标数组，格式：[[纬度, 经度], ...]，最多100个
+   * @returns WGS84坐标数组，格式：[[纬度, 经度], ...]，转换失败的位置为 null
+   */
+  private async convertGcj02ToWgs84Batch(
+    coordinates: [number, number][],
+  ): Promise<([number, number] | null)[]> {
+    if (coordinates.length === 0) {
+      return [];
+    }
+
+    try {
+      // 从配置表读取百度地图API Key
+      const config = await this.commonConfigService.findByKey('BaiduMapApiKey');
+      if (!config || !config.isEnabled || !config.configValue) {
+        console.warn('百度地图API Key配置不存在或未启用，跳过坐标转换');
+        return coordinates.map(() => null);
+      }
+
+      const apiKey = config.configValue;
+      // 构建坐标字符串：lng1,lat1;lng2,lat2;...
+      const coordsStr = coordinates.map(([lat, lng]) => `${lng},${lat}`).join(';');
+      // 百度坐标转换API：from=3表示GCJ-02，to=1表示WGS84
+      const url = `https://api.map.baidu.com/geoconv/v1/?coords=${coordsStr}&from=3&to=1&ak=${apiKey}`;
+
+      const response = await axios.get(url, {
+        timeout: 60000, // 60秒超时（批量转换可能需要更长时间）
+      });
+
+      if (response.data.status === 0 && response.data.result && response.data.result.length > 0) {
+        // 返回结果数组，每个元素对应一个坐标的转换结果
+        return response.data.result.map((result: any) => [result.y, result.x] as [number, number]);
+      } else {
+        console.error(`百度坐标转换API返回错误: ${response.data.message || '未知错误'}`);
+        return coordinates.map(() => null);
+      }
+    } catch (error) {
+      console.error(`批量GCJ-02转WGS84失败:`, error.message);
+      return coordinates.map(() => null);
     }
   }
 
@@ -169,20 +220,16 @@ export class VehicleTrackService {
       },
     });
 
+    // 如果数据已存在，直接跳过，不进行更新
+    if (existingTrack) {
+      return existingTrack;
+    }
+
     // 解析百度坐标系坐标
     const baiduLat = this.parseNumber(item.lat);
     const baiduLng = this.parseNumber(item.lng);
 
-    // 如果数据已存在且GCJ-02坐标已有值，跳过坐标转换，使用已有值
-    let gcj02Coords: [number, number] | null = null;
-    if (existingTrack && existingTrack.lat_gcj02 !== null && existingTrack.lng_gcj02 !== null) {
-      gcj02Coords = [existingTrack.lat_gcj02, existingTrack.lng_gcj02];
-    } else {
-      // 调用百度坐标转换API，转换为GCJ-02坐标系
-      gcj02Coords = await this.convertBaiduToGcj02(baiduLat, baiduLng);
-    }
-
-    // 构建实体数据
+    // 构建实体数据（仅用于新数据）
     const trackData: Partial<VehicleTrack> = {
       imei: '868120325700570',
       direction: this.parseNumber(item.direction),
@@ -192,23 +239,19 @@ export class VehicleTrackService {
       gpsTime: gpsTimeStamp,
       lat: baiduLat,
       lng: baiduLng,
-      lat_gcj02: gcj02Coords ? gcj02Coords[0] : null,
-      lng_gcj02: gcj02Coords ? gcj02Coords[1] : null,
+      lat_gcj02: null,
+      lng_gcj02: null,
+      lat_wgs84: null,
+      lng_wgs84: null,
       posMethod: this.parseNumber(item.posMethod),
       posMulFlag: this.parseNumber(item.posMulFlag),
       posType: this.parseNumber(item.posType),
       precision: this.parseNumber(item.precision),
     };
 
-    if (existingTrack) {
-      // 更新已存在的数据
-      Object.assign(existingTrack, trackData);
-      return await this.vehicleTrackRepository.save(existingTrack);
-    } else {
-      // 创建新数据
-      const newTrack = this.vehicleTrackRepository.create(trackData);
-      return await this.vehicleTrackRepository.save(newTrack);
-    }
+    // 创建新数据
+    const newTrack = this.vehicleTrackRepository.create(trackData);
+    return await this.vehicleTrackRepository.save(newTrack);
   }
 
   /**
@@ -282,6 +325,8 @@ export class VehicleTrackService {
       limit = 10,
       startTime,
       endTime,
+      missingGcj02,
+      missingWgs84,
     } = queryTrackDto;
 
     // 构建查询条件
@@ -293,6 +338,20 @@ export class VehicleTrackService {
     }
     if (endTime) {
       queryBuilder.andWhere('track.gpsTime <= :endTime', { endTime });
+    }
+
+    // 筛选缺少 GCJ-02 坐标的数据
+    if (missingGcj02) {
+      queryBuilder.andWhere('track.lat IS NOT NULL');
+      queryBuilder.andWhere('track.lng IS NOT NULL');
+      queryBuilder.andWhere('(track.lat_gcj02 IS NULL OR track.lng_gcj02 IS NULL)');
+    }
+
+    // 筛选缺少 WGS84 坐标的数据
+    if (missingWgs84) {
+      queryBuilder.andWhere('track.lat IS NOT NULL');
+      queryBuilder.andWhere('track.lng IS NOT NULL');
+      queryBuilder.andWhere('(track.lat_wgs84 IS NULL OR track.lng_wgs84 IS NULL)');
     }
 
     // 排序：按 GPS 时间倒序
@@ -320,6 +379,185 @@ export class VehicleTrackService {
         totalPages,
       },
     };
+  }
+
+  /**
+   * 批量转换 GCJ-02 坐标
+   * 查询缺少 GCJ-02 坐标的记录并批量转换
+   */
+  async batchConvertToGcj02(convertDto?: ConvertCoordinateDto): Promise<{ success: number; failed: number; message: string }> {
+    const { startTime, endTime } = convertDto || {};
+
+    try {
+      // 构建查询条件：查询缺少 GCJ-02 坐标的记录
+      const queryBuilder = this.vehicleTrackRepository.createQueryBuilder('track');
+      queryBuilder.where('track.lat IS NOT NULL');
+      queryBuilder.andWhere('track.lng IS NOT NULL');
+      queryBuilder.andWhere('(track.lat_gcj02 IS NULL OR track.lng_gcj02 IS NULL)');
+
+      // 时间范围筛选（可选）
+      if (startTime) {
+        queryBuilder.andWhere('track.gpsTime >= :startTime', { startTime });
+      }
+      if (endTime) {
+        queryBuilder.andWhere('track.gpsTime <= :endTime', { endTime });
+      }
+
+      // 获取所有需要转换的记录
+      const tracksToConvert = await queryBuilder.getMany();
+
+      if (tracksToConvert.length === 0) {
+        return {
+          success: 0,
+          failed: 0,
+          message: '没有需要转换的数据',
+        };
+      }
+
+      let successCount = 0;
+      let failedCount = 0;
+
+      // 分批处理，每批 100 条（百度API最多支持100个坐标点）
+      const batchSize = 100;
+      for (let i = 0; i < tracksToConvert.length; i += batchSize) {
+        const batch = tracksToConvert.slice(i, i + batchSize);
+
+        try {
+          // 准备批量转换的坐标数组
+          const coordinates: [number, number][] = batch.map((track) => [track.lat, track.lng]);
+
+          // 批量调用坐标转换API（一次转换最多100个坐标点）
+          const convertedCoords = await this.convertBaiduToGcj02Batch(coordinates);
+
+          // 更新每条记录的坐标
+          for (let j = 0; j < batch.length; j++) {
+            const track = batch[j];
+            const coords = convertedCoords[j];
+
+            if (coords) {
+              try {
+                track.lat_gcj02 = coords[0];
+                track.lng_gcj02 = coords[1];
+                await this.vehicleTrackRepository.save(track);
+                successCount++;
+              } catch (error) {
+                console.error(`保存 GCJ-02 坐标失败 (id: ${track.id}):`, error.message);
+                failedCount++;
+              }
+            } else {
+              failedCount++;
+            }
+          }
+        } catch (error) {
+          console.error(`批量转换 GCJ-02 坐标失败:`, error.message);
+          // 如果批量转换失败，标记整批为失败
+          failedCount += batch.length;
+        }
+      }
+
+      return {
+        success: successCount,
+        failed: failedCount,
+        message: `转换完成：成功 ${successCount} 条，失败 ${failedCount} 条`,
+      };
+    } catch (error) {
+      throw new HttpException(
+        `批量转换 GCJ-02 坐标失败: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**
+   * 批量转换 WGS84 坐标
+   * 查询缺少 WGS84 坐标的记录并批量转换（需要已有 GCJ-02 坐标）
+   */
+  async batchConvertToWgs84(convertDto?: ConvertCoordinateDto): Promise<{ success: number; failed: number; message: string }> {
+    const { startTime, endTime } = convertDto || {};
+
+    try {
+      // 构建查询条件：查询缺少 WGS84 坐标的记录（需要已有 GCJ-02 坐标）
+      const queryBuilder = this.vehicleTrackRepository.createQueryBuilder('track');
+      queryBuilder.where('track.lat IS NOT NULL');
+      queryBuilder.andWhere('track.lng IS NOT NULL');
+      queryBuilder.andWhere('track.lat_gcj02 IS NOT NULL');
+      queryBuilder.andWhere('track.lng_gcj02 IS NOT NULL');
+      queryBuilder.andWhere('(track.lat_wgs84 IS NULL OR track.lng_wgs84 IS NULL)');
+
+      // 时间范围筛选（可选）
+      if (startTime) {
+        queryBuilder.andWhere('track.gpsTime >= :startTime', { startTime });
+      }
+      if (endTime) {
+        queryBuilder.andWhere('track.gpsTime <= :endTime', { endTime });
+      }
+
+      // 获取所有需要转换的记录
+      const tracksToConvert = await queryBuilder.getMany();
+
+      if (tracksToConvert.length === 0) {
+        return {
+          success: 0,
+          failed: 0,
+          message: '没有需要转换的数据',
+        };
+      }
+
+      let successCount = 0;
+      let failedCount = 0;
+
+      // 分批处理，每批 100 条（百度API最多支持100个坐标点）
+      const batchSize = 100;
+      for (let i = 0; i < tracksToConvert.length; i += batchSize) {
+        const batch = tracksToConvert.slice(i, i + batchSize);
+
+        try {
+          // 准备批量转换的坐标数组
+          const coordinates: [number, number][] = batch.map((track) => [
+            track.lat_gcj02!,
+            track.lng_gcj02!,
+          ]);
+
+          // 批量调用坐标转换API（一次转换最多100个坐标点）
+          const convertedCoords = await this.convertGcj02ToWgs84Batch(coordinates);
+
+          // 更新每条记录的坐标
+          for (let j = 0; j < batch.length; j++) {
+            const track = batch[j];
+            const coords = convertedCoords[j];
+
+            if (coords) {
+              try {
+                track.lat_wgs84 = coords[0];
+                track.lng_wgs84 = coords[1];
+                await this.vehicleTrackRepository.save(track);
+                successCount++;
+              } catch (error) {
+                console.error(`保存 WGS84 坐标失败 (id: ${track.id}):`, error.message);
+                failedCount++;
+              }
+            } else {
+              failedCount++;
+            }
+          }
+        } catch (error) {
+          console.error(`批量转换 WGS84 坐标失败:`, error.message);
+          // 如果批量转换失败，标记整批为失败
+          failedCount += batch.length;
+        }
+      }
+
+      return {
+        success: successCount,
+        failed: failedCount,
+        message: `转换完成：成功 ${successCount} 条，失败 ${failedCount} 条`,
+      };
+    } catch (error) {
+      throw new HttpException(
+        `批量转换 WGS84 坐标失败: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
 

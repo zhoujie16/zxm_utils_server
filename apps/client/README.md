@@ -327,7 +327,7 @@ pnpm run deploy
 ```typescript
 export const API_CONFIG = {
   baseURL: 'https://api.yourapp.com', // 修改为实际的生产环境地址
-  timeout: 10000,
+  timeout: 60000,
 } as const;
 ```
 
@@ -397,7 +397,7 @@ docs(readme): update installation guide
 // API 基础配置
 export const api = {
   baseURL: 'http://localhost:6680', // 固定配置，生产环境需手动修改
-  timeout: 10000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },

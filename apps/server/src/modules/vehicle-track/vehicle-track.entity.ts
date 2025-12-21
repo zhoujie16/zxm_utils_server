@@ -63,6 +63,14 @@ export class VehicleTrack {
   @Column({ type: 'real', nullable: true })
   lng_gcj02: number | null;
 
+  @ApiProperty({ description: 'WGS84坐标系纬度（GPS标准）', example: 31.194825142366195 })
+  @Column({ type: 'real', nullable: true })
+  lat_wgs84: number | null;
+
+  @ApiProperty({ description: 'WGS84坐标系经度（GPS标准）', example: 121.54489237789676 })
+  @Column({ type: 'real', nullable: true })
+  lng_wgs84: number | null;
+
   @ApiProperty({ description: '定位方法', example: 0 })
   @Column({ type: 'integer', default: 0 })
   posMethod: number;

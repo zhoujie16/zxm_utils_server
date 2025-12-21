@@ -58,6 +58,22 @@ export const trackColumns: ColumnsType<IVehicleTrack> = [
     render: (value: number | null | undefined) => value !== null && value !== undefined ? value.toFixed(6) : '-',
   },
   {
+    title: 'WGS84纬度',
+    dataIndex: 'lat_wgs84',
+    key: 'lat_wgs84',
+    width: 130,
+    align: 'right',
+    render: (value: number | null | undefined) => value !== null && value !== undefined ? value.toFixed(6) : '-',
+  },
+  {
+    title: 'WGS84经度',
+    dataIndex: 'lng_wgs84',
+    key: 'lng_wgs84',
+    width: 130,
+    align: 'right',
+    render: (value: number | null | undefined) => value !== null && value !== undefined ? value.toFixed(6) : '-',
+  },
+  {
     title: 'GPS速度（km/h）',
     dataIndex: 'gpsSpeed',
     key: 'gpsSpeed',

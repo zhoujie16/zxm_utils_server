@@ -45,6 +45,8 @@ export interface IUseTrackListReturn {
  * @param initialLimit 初始每页数量，默认为 10
  * @param initialStartTime 初始开始时间
  * @param initialEndTime 初始结束时间
+ * @param missingGcj02 筛选缺少 GCJ-02 坐标的数据
+ * @param missingWgs84 筛选缺少 WGS84 坐标的数据
  * @returns Hook 返回值
  */
 export function useTrackList(
@@ -52,6 +54,8 @@ export function useTrackList(
   initialLimit = 10,
   initialStartTime?: number,
   initialEndTime?: number,
+  missingGcj02?: boolean,
+  missingWgs84?: boolean,
 ): IUseTrackListReturn {
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
@@ -71,9 +75,15 @@ export function useTrackList(
     if (endTime !== undefined) {
       params.endTime = endTime;
     }
+    if (missingGcj02 !== undefined) {
+      params.missingGcj02 = missingGcj02;
+    }
+    if (missingWgs84 !== undefined) {
+      params.missingWgs84 = missingWgs84;
+    }
 
     return params;
-  }, [page, limit, startTime, endTime]);
+  }, [page, limit, startTime, endTime, missingGcj02, missingWgs84]);
 
   // 使用 SWR 获取数据
   const { data, error, isLoading, mutate } = useSWR<ITrackListResponse>(
