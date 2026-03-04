@@ -13,9 +13,11 @@
     "dev": "concurrently \"yarn dev:server\" \"yarn dev:admin\" \"yarn dev:client\"",
     "dev:admin": "yarn workspace admin dev",
     "dev:server": "yarn workspace server start:dev",
+    "dev:server-go": "cd apps/server-go && go run ./cmd/server/main.go",
     "dev:client": "yarn workspace client dev",
     "admin:build": "yarn workspace admin build",
     "server:build": "yarn workspace server build",
+    "server-go:build": "cd apps/server-go && mkdir -p dist && GOOS=linux GOARCH=amd64 go build -o dist/server-go-linux-amd64 ./cmd/server && GOOS=windows GOARCH=amd64 go build -o dist/server-go-windows-amd64.exe ./cmd/server && cd dist && zip server-go-linux-amd64.zip server-go-linux-amd64 && zip server-go-windows-amd64.zip server-go-windows-amd64.exe && cd ..",
     "client:build": "yarn workspace client build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "install:all": "yarn install"

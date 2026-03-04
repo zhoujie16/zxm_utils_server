@@ -1,0 +1,19 @@
+server:
+  port: 8010
+  apiPrefix: "api"
+  corsOrigin: "*"
+  env: "development"
+
+jwt:
+  secret: "your_jwt_secret_key_here_change_in_production"
+  expiresIn: "168h"
+
+admin:
+  username: "zhoujie"
+  password: "ZHOUjie520"
+
+database:
+  path: "data/app.db"
+  synchronize: true
+  logging: true
+
