@@ -55,7 +55,7 @@ func (h *VehicleTrackHandler) sync(c *gin.Context) {
 		return
 	}
 
-	// 时间格式与范围校验，对齐原 NestJS 自定义验证逻辑
+	// 时间格式与范围校验
 	layout := "2006-01-02 15:04:05"
 	start, err := time.Parse(layout, req.StartTime)
 	if err != nil {
@@ -117,4 +117,3 @@ func (h *VehicleTrackHandler) convertGcj02(c *gin.Context) {
 		"message": "转换完成：成功 " + strconv.Itoa(success) + " 条，失败 " + strconv.Itoa(failed) + " 条",
 	})
 }
-

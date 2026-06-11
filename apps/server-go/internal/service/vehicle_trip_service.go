@@ -88,8 +88,8 @@ func (s *vehicleTripService) SyncTripData(ctx context.Context, req dto.SyncTripR
 	}
 
 	var parsed struct {
-		Code int             `json:"code"`
-		Msg  string          `json:"msg"`
+		Code int              `json:"code"`
+		Msg  string           `json:"msg"`
 		Data []map[string]any `json:"data"`
 	}
 	if err := json.Unmarshal(body, &parsed); err != nil {
@@ -199,20 +199,20 @@ func (s *vehicleTripService) saveTripData(ctx context.Context, item map[string]a
 	}
 
 	tripData := model.VehicleTrip{
-		ExternalID: externalId,
-		VehicleID:  int(parseInt(toString(item["vehicleId"]))),
-		ModelID:    int(parseInt(toString(item["modelId"]))),
-		Model:      toString(item["model"]),
-		BrandID:    int(parseInt(toString(item["brandId"]))),
-		Brand:      toString(item["brand"]),
-		SeriesID:   int(parseInt(toString(item["seriesId"]))),
-		Series:     toString(item["series"]),
-		DeviceID:   toString(item["deviceId"]),
-		UnitID:     int(parseInt(toString(item["unitId"]))),
-		Consumption: int(roundFloat(toFloat(toString(item["consumption"])))),
-		Mileage:     int(roundFloat(toFloat(toString(item["mileage"])))),
-		Velocity:    int(roundFloat(toFloat(toString(item["velocity"])))),
-		MaxSpeed:    int(roundFloat(toFloat(toString(item["maxSpeed"])))),
+		ExternalID:        externalId,
+		VehicleID:         int(parseInt(toString(item["vehicleId"]))),
+		ModelID:           int(parseInt(toString(item["modelId"]))),
+		Model:             toString(item["model"]),
+		BrandID:           int(parseInt(toString(item["brandId"]))),
+		Brand:             toString(item["brand"]),
+		SeriesID:          int(parseInt(toString(item["seriesId"]))),
+		Series:            toString(item["series"]),
+		DeviceID:          toString(item["deviceId"]),
+		UnitID:            int(parseInt(toString(item["unitId"]))),
+		Consumption:       int(roundFloat(toFloat(toString(item["consumption"])))),
+		Mileage:           int(roundFloat(toFloat(toString(item["mileage"])))),
+		Velocity:          int(roundFloat(toFloat(toString(item["velocity"])))),
+		MaxSpeed:          int(roundFloat(toFloat(toString(item["maxSpeed"])))),
 		SharpAcceleration: int(parseInt(toString(item["sharpAcceleration"]))),
 		SharpDeceleration: int(parseInt(toString(item["sharpDeceleration"]))),
 		SharpTurn:         int(parseInt(toString(item["sharpTurn"]))),
@@ -250,7 +250,7 @@ func parseMonthToTimestamp(month string) (int64, int64) {
 	}
 	year, _ := strconv.Atoi(parts[0])
 	monthNum, _ := strconv.Atoi(parts[1])
-	// 使用本地时区计算月份起止时间，与 NestJS 的 new Date(year, month-1, ...) 行为保持一致
+	// 使用本地时区计算月份起止时间
 	startDate := time.Date(year, time.Month(monthNum), 1, 0, 0, 0, 0, time.Local)
 	endDate := startDate.AddDate(0, 1, 0).Add(-time.Millisecond)
 	return startDate.UnixMilli(), endDate.UnixMilli()
@@ -270,4 +270,3 @@ func roundFloat(f float64) float64 {
 	}
 	return math.Ceil(f - 0.5)
 }
-

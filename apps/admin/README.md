@@ -194,7 +194,7 @@ yarn analyze
 ```typescript
 dev: {
   '/api/': {
-    target: 'http://localhost:6001',
+    target: 'http://localhost:8010',
     changeOrigin: true,
   },
 }
@@ -209,10 +209,9 @@ dev: {
 ## 📝 注意事项
 
 1. 生产环境构建后，代理配置不会生效，需要配置反向代理（如 Nginx）
-2. 确保后端服务运行在 6001 端口，否则代理会失败
+2. 确保 Go 后端服务运行在 8010 端口，否则代理会失败
 3. 开发时建议使用 `start:dev` 命令，避免 Mock 数据干扰
 
 ## 📄 许可证
 
 UNLICENSED
-

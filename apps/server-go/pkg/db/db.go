@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/zhouxiaomi/zxm_utils_server/apps/server-go/config"
+	"github.com/zhouxiaomi/zxm_utils_server/apps/server-go/internal/model"
 )
 
 func Init(cfg *config.Config) (*gorm.DB, error) {
@@ -34,6 +35,16 @@ func Init(cfg *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	if cfg.Database.Synchronize {
+		if err := db.AutoMigrate(
+			&model.Demo{},
+			&model.VehicleTrip{},
+			&model.VehicleTrack{},
+			&model.CommonConfig{},
+		); err != nil {
+			return nil, err
+		}
+	}
+
 	return db, nil
 }
-
