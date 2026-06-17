@@ -30,13 +30,15 @@ func NewVehicleTripRepository(db *gorm.DB) IVehicleTripRepository {
 
 func (r *vehicleTripRepository) FindByExternalID(ctx context.Context, externalID int64) (*model.VehicleTrip, error) {
 	var trip model.VehicleTrip
-	if err := r.db.WithContext(ctx).
+	result := r.db.WithContext(ctx).
 		Where("externalId = ?", externalID).
-		First(&trip).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
-		return nil, err
+		Limit(1).
+		Find(&trip)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
 	}
 	return &trip, nil
 }
@@ -88,4 +90,3 @@ func (r *vehicleTripRepository) FindPaged(
 
 	return list, total, nil
 }
-

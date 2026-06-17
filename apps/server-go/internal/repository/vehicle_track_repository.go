@@ -31,13 +31,15 @@ func NewVehicleTrackRepository(db *gorm.DB) IVehicleTrackRepository {
 
 func (r *vehicleTrackRepository) FindByImeiAndGPSTime(ctx context.Context, imei string, gpsTime int64) (*model.VehicleTrack, error) {
 	var track model.VehicleTrack
-	if err := r.db.WithContext(ctx).
+	result := r.db.WithContext(ctx).
 		Where("imei = ? AND gpsTime = ?", imei, gpsTime).
-		First(&track).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
-		return nil, err
+		Limit(1).
+		Find(&track)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
 	}
 	return &track, nil
 }
@@ -116,4 +118,3 @@ func (r *vehicleTrackRepository) FindMissingGcj02(
 	}
 	return list, nil
 }
-
