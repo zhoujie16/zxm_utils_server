@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
 	"github.com/zhouxiaomi/zxm_utils_server/apps/server/config"
