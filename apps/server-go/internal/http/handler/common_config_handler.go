@@ -27,6 +27,7 @@ func (h *CommonConfigHandler) Register(rg *gin.RouterGroup) {
 	rg.GET("key/:configKey", h.findByKey)
 	rg.GET(":id", h.findOne)
 	rg.POST("", h.create)
+	rg.POST(":configKey/refresh-token", h.refreshToken)
 	rg.PATCH(":id", h.update)
 	rg.DELETE(":id", h.remove)
 }
@@ -76,6 +77,7 @@ func (h *CommonConfigHandler) create(c *gin.Context) {
 	var body struct {
 		ConfigKey   string  `json:"configKey"`
 		ConfigValue *string `json:"configValue"`
+		ConfigExtra *string `json:"configExtra"`
 		Description *string `json:"description"`
 		SortOrder   *int    `json:"sortOrder"`
 		IsEnabled   *bool   `json:"isEnabled"`
@@ -87,6 +89,7 @@ func (h *CommonConfigHandler) create(c *gin.Context) {
 	input := service.CommonConfigCreateInput{
 		ConfigKey:   body.ConfigKey,
 		ConfigValue: body.ConfigValue,
+		ConfigExtra: body.ConfigExtra,
 		Description: body.Description,
 		SortOrder:   body.SortOrder,
 		IsEnabled:   body.IsEnabled,
@@ -112,6 +115,7 @@ func (h *CommonConfigHandler) update(c *gin.Context) {
 	var body struct {
 		ConfigKey   *string `json:"configKey"`
 		ConfigValue *string `json:"configValue"`
+		ConfigExtra *string `json:"configExtra"`
 		Description *string `json:"description"`
 		SortOrder   *int    `json:"sortOrder"`
 		IsEnabled   *bool   `json:"isEnabled"`
@@ -123,6 +127,7 @@ func (h *CommonConfigHandler) update(c *gin.Context) {
 	input := service.CommonConfigUpdateInput{
 		ConfigKey:   body.ConfigKey,
 		ConfigValue: body.ConfigValue,
+		ConfigExtra: body.ConfigExtra,
 		Description: body.Description,
 		SortOrder:   body.SortOrder,
 		IsEnabled:   body.IsEnabled,
@@ -136,6 +141,23 @@ func (h *CommonConfigHandler) update(c *gin.Context) {
 			c.JSON(http.StatusConflict, gin.H{"message": err.Error()})
 		default:
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		}
+		return
+	}
+	c.JSON(http.StatusOK, updated)
+}
+
+func (h *CommonConfigHandler) refreshToken(c *gin.Context) {
+	key := c.Param("configKey")
+	updated, err := h.svc.RefreshTokenByKey(c.Request.Context(), key)
+	if err != nil {
+		switch err.Error() {
+		case "配置项不存在":
+			c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		case "暂不支持刷新该配置", "配置未启用", "配置扩展参数不存在", "配置扩展参数不是有效 JSON", "loginApiData 未配置":
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		default:
+			c.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		}
 		return
 	}
@@ -158,4 +180,3 @@ func (h *CommonConfigHandler) remove(c *gin.Context) {
 	}
 	c.Status(http.StatusNoContent)
 }
-

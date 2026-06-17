@@ -11,6 +11,7 @@
 | 根据配置键获取配置 | GET | /api/common-config/key/:configKey | 根据配置键获取配置项 |
 | 创建新配置 | POST | /api/common-config | 创建一个新的配置项 |
 | 更新配置 | PATCH | /api/common-config/:id | 更新指定ID的配置项 |
+| 刷新配置 Token | POST | /api/common-config/:configKey/refresh-token | 根据配置扩展参数刷新指定 Token |
 | 删除配置 | DELETE | /api/common-config/:id | 删除指定ID的配置项 |
 
 ## 数据模型
@@ -22,6 +23,7 @@
 | id | number | 配置ID | 1 |
 | configKey | string | 配置键（唯一标识） | "system.max_user_count" |
 | configValue | string | 配置值（JSON字符串） | '{"count": 100}' |
+| configExtra | string | 配置扩展参数（JSON字符串） | '{"loginApiData":"ver=1&method=login&account=..."}' |
 | description | string | 配置描述 | "系统最大用户数限制" |
 | sortOrder | number | 排序顺序 | 0 |
 | isEnabled | boolean | 是否启用 | true |
@@ -40,3 +42,9 @@
 - `email.smtp_host`
 - `api.rate_limit`
 - `app.version`
+
+## 业务配置说明
+
+- `TuQiangToken`：`configValue` 保存途强登录态 `SHAREJSESSIONID`；`configExtra` 可保存 `{"loginApiData":"..."}`，用于调用刷新 Token 接口。
+- `WanCheBaoToken`：保存万车宝接口 Token。
+- `BaiduMapApiKey`：保存百度地图 API Key。

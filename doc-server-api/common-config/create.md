@@ -14,6 +14,7 @@
 |--------|------|------|------|------|
 | configKey | string | 是 | 配置键（唯一标识） | "api.rate_limit" |
 | configValue | string | 否 | 配置值（一般为JSON字符串） | '{"limit": 1000}' |
+| configExtra | string | 否 | 配置扩展参数（一般为JSON字符串） | '{"loginApiData":"ver=1&method=login&account=..."}' |
 | description | string | 否 | 配置描述 | "API速率限制" |
 | sortOrder | number | 否 | 排序顺序，默认为0 | 10 |
 | isEnabled | boolean | 否 | 是否启用，默认为true | true |
@@ -24,6 +25,7 @@
 {
   "configKey": "api.rate_limit",
   "configValue": "{\"limit\": 1000, \"window\": 3600}",
+  "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
   "description": "API速率限制设置",
   "sortOrder": 10,
   "isEnabled": true
@@ -39,6 +41,7 @@
   "id": 3,
   "configKey": "api.rate_limit",
   "configValue": "{\"limit\": 1000, \"window\": 3600}",
+  "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
   "description": "API速率限制设置",
   "sortOrder": 10,
   "isEnabled": true,
@@ -78,6 +81,7 @@ curl -X POST "http://localhost:7031/api/common-config" \
   -d '{
     "configKey": "api.rate_limit",
     "configValue": "{\"limit\": 1000, \"window\": 3600}",
+    "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
     "description": "API速率限制设置",
     "sortOrder": 10,
     "isEnabled": true

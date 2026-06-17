@@ -6,7 +6,7 @@ import { useState, useCallback } from 'react';
 import { message } from 'antd';
 import dayjs from 'dayjs';
 import type { ISyncTrackParams, ISyncTrackResponse } from '@/types';
-import { syncTrackData } from '@zxm-toolkit/http-client';
+import { refreshConfigToken, syncTrackData } from '@zxm-toolkit/http-client';
 
 /**
  * 单个周期同步状态
@@ -53,45 +53,47 @@ export interface IUseMultiMonthTrackSyncReturn {
  * @param month 月份（格式：YYYY-MM）
  * @returns 周期列表
  */
-const splitMonthIntoPeriods = (month: string): Array<{ startTime: string; endTime: string; period: string }> => {
+const splitMonthIntoPeriods = (
+  month: string
+): Array<{ startTime: string; endTime: string; period: string }> => {
   const [year, monthNum] = month.split('-').map(Number);
-  
+
   // 计算月份的开始和结束日期
   const startDate = dayjs(`${year}-${String(monthNum).padStart(2, '0')}-01`);
   const endDate = startDate.endOf('month');
-  
+
   const periods: Array<{ startTime: string; endTime: string; period: string }> = [];
   let currentStart = startDate;
-  
+
   while (currentStart.isBefore(endDate) || currentStart.isSame(endDate, 'day')) {
     // 当前周期为当日
     const periodEnd = currentStart;
     const actualEnd = periodEnd.isAfter(endDate) ? endDate : periodEnd;
-    
+
     // 格式化时间
     const startTimeStr = currentStart.format('YYYY-MM-DD HH:mm:ss');
     const endTimeStr = actualEnd.format('YYYY-MM-DD 23:59:59');
-    
+
     // 生成周期标识
     const periodLabel = currentStart.format('YYYY-MM-DD') + ' ~ ' + actualEnd.format('YYYY-MM-DD');
-    
+
     periods.push({
       startTime: startTimeStr,
       endTime: endTimeStr,
       period: periodLabel,
     });
-    
+
     // 下一个周期从当前周期结束的第二天开始
     const nextStart = actualEnd.add(1, 'day').startOf('day');
-    
+
     // 如果下一个周期的开始时间已经超过月份结束时间，则退出循环
     if (nextStart.isAfter(endDate)) {
       break;
     }
-    
+
     currentStart = nextStart;
   }
-  
+
   return periods;
 };
 
@@ -113,14 +115,27 @@ export const useMultiMonthTrackSync = (): IUseMultiMonthTrackSyncReturn => {
       return;
     }
 
+    setIsSyncing(true);
+
+    try {
+      await refreshConfigToken('TuQiangToken');
+      message.success('途强 Token 已更新');
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || error?.message || '途强 Token 更新失败';
+      message.error(errorMessage);
+      setIsSyncing(false);
+      return;
+    }
+
     // 对月份进行排序（按时间顺序）
     const months = [...selectedMonths].sort();
 
     // 将所有月份拆分为周期，并初始化同步状态列表
     const allPeriods: IPeriodSyncStatus[] = [];
-    months.forEach((month) => {
+    months.forEach(month => {
       const periods = splitMonthIntoPeriods(month);
-      periods.forEach((period) => {
+      periods.forEach(period => {
         allPeriods.push({
           month,
           period: period.period,
@@ -132,7 +147,6 @@ export const useMultiMonthTrackSync = (): IUseMultiMonthTrackSyncReturn => {
     });
 
     setSyncStatusList(allPeriods);
-    setIsSyncing(true);
 
     // 按周期顺序逐个同步
     let successCount = 0;
@@ -142,8 +156,8 @@ export const useMultiMonthTrackSync = (): IUseMultiMonthTrackSyncReturn => {
       const period = allPeriods[i];
 
       // 更新当前周期状态为同步中
-      setSyncStatusList((prev) =>
-        prev.map((item) =>
+      setSyncStatusList(prev =>
+        prev.map(item =>
           item.month === period.month && item.period === period.period
             ? { ...item, status: 'syncing' }
             : item
@@ -159,8 +173,8 @@ export const useMultiMonthTrackSync = (): IUseMultiMonthTrackSyncReturn => {
         const response: ISyncTrackResponse = await syncTrackData(params);
 
         // 更新当前周期状态为成功
-        setSyncStatusList((prev) =>
-          prev.map((item) =>
+        setSyncStatusList(prev =>
+          prev.map(item =>
             item.month === period.month && item.period === period.period
               ? {
                   ...item,
@@ -175,8 +189,8 @@ export const useMultiMonthTrackSync = (): IUseMultiMonthTrackSyncReturn => {
       } catch (error: any) {
         // 更新当前周期状态为失败
         const errorMessage = error?.response?.data?.message || error?.message || '同步失败';
-        setSyncStatusList((prev) =>
-          prev.map((item) =>
+        setSyncStatusList(prev =>
+          prev.map(item =>
             item.month === period.month && item.period === period.period
               ? {
                   ...item,

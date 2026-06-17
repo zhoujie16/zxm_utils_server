@@ -20,6 +20,7 @@
 |--------|------|------|------|------|
 | configKey | string | 否 | 配置键（唯一标识） | "api.rate_limit_v2" |
 | configValue | string | 否 | 配置值（一般为JSON字符串） | '{"limit": 2000}' |
+| configExtra | string | 否 | 配置扩展参数（一般为JSON字符串） | '{"loginApiData":"ver=1&method=login&account=..."}' |
 | description | string | 否 | 配置描述 | "API速率限制v2" |
 | sortOrder | number | 否 | 排序顺序 | 15 |
 | isEnabled | boolean | 否 | 是否启用 | false |
@@ -31,6 +32,7 @@
 ```json
 {
   "configValue": "{\"limit\": 2000, \"window\": 7200}",
+  "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
   "description": "API速率限制v2更新",
   "sortOrder": 15,
   "isEnabled": false
@@ -46,6 +48,7 @@
   "id": 3,
   "configKey": "api.rate_limit",
   "configValue": "{\"limit\": 2000, \"window\": 7200}",
+  "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
   "description": "API速率限制v2更新",
   "sortOrder": 15,
   "isEnabled": false,
@@ -80,6 +83,7 @@ curl -X PATCH "http://localhost:7031/api/common-config/3" \
   -H "Content-Type: application/json" \
   -d '{
     "configValue": "{\"limit\": 2000, \"window\": 7200}",
+    "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=...\"}",
     "description": "API速率限制v2更新",
     "sortOrder": 15,
     "isEnabled": false

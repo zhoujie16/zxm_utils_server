@@ -4,11 +4,7 @@
  */
 
 import { get, post, patch, del } from '../index';
-import type {
-  ICommonConfig,
-  ICreateConfigParams,
-  IUpdateConfigParams,
-} from '../api-types';
+import type { ICommonConfig, ICreateConfigParams, IUpdateConfigParams } from '../api-types';
 
 const BASE_URL = '/common-config';
 
@@ -44,11 +40,17 @@ export async function createConfig(params: ICreateConfigParams): Promise<ICommon
  * @param params 更新参数
  * @returns 更新后的公共配置
  */
-export async function updateConfig(
-  id: number,
-  params: IUpdateConfigParams,
-): Promise<ICommonConfig> {
+export async function updateConfig(id: number, params: IUpdateConfigParams): Promise<ICommonConfig> {
   return patch<ICommonConfig>(`${BASE_URL}/${id}`, params);
+}
+
+/**
+ * 刷新指定配置的 Token
+ * @param key 配置键
+ * @returns 更新后的公共配置
+ */
+export async function refreshConfigToken(key: string): Promise<ICommonConfig> {
+  return post<ICommonConfig>(`${BASE_URL}/${encodeURIComponent(key)}/refresh-token`);
 }
 
 /**
@@ -58,4 +60,3 @@ export async function updateConfig(
 export async function deleteConfig(id: number): Promise<void> {
   return del<void>(`${BASE_URL}/${id}`);
 }
-

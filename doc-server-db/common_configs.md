@@ -11,6 +11,7 @@
 | `id`          | INTEGER       | 主键，自增               | 否       | —      | 配置项主键 ID。 |
 | `configKey`   | VARCHAR(255)  | 唯一索引                 | 否       | —      | 配置键，唯一标识一个配置项，例如：`TuQiangToken`、`WanCheBaoToken`、`BaiduMapApiKey`。 |
 | `configValue` | TEXT          | —                        | 是       | `NULL` | 配置值，一般为字符串（视业务可为 JSON 字符串），具体格式由业务约定。 |
+| `configExtra` | TEXT          | —                        | 是       | `NULL` | 配置扩展参数，一般为 JSON 字符串，例如 Token 刷新所需的登录表单参数。 |
 | `description` | VARCHAR(500)  | —                        | 是       | `NULL` | 配置描述，用于说明配置项用途。 |
 | `sortOrder`   | INTEGER       | —                        | 否       | `0`    | 排序顺序，值越小越靠前，主要用于管理后台列表展示。 |
 | `isEnabled`   | BOOLEAN       | —                        | 否       | `true` | 是否启用该配置项，禁用时相关业务会拒绝使用该配置。 |
@@ -26,7 +27,7 @@
   - `UNIQUE (configKey)`：同一个配置键只能存在一条记录，用于防止重复配置。
 
 - **常用业务约定的配置键**
-  - `TuQiangToken`：途强 API 访问 token，用于车辆轨迹同步。
+  - `TuQiangToken`：途强 API 访问 token，用于车辆轨迹同步；`configValue` 存 `SHAREJSESSIONID`，`configExtra` 可存刷新 Token 所需的 `loginApiData`。
   - `WanCheBaoToken`：万车宝 API 访问 token，用于车辆行程同步。
   - `BaiduMapApiKey`：百度地图 API Key，用于坐标转换（BD-09 → GCJ-02）。
 
@@ -39,6 +40,7 @@
 - **读取场景**
   - 各业务模块在调用外部服务前，从本表按 `configKey` 读取配置：
     - 车辆轨迹同步：读取 `TuQiangToken` 生成 Cookie。
+    - 车辆轨迹同步开始前：可根据 `TuQiangToken.configExtra` 的 `loginApiData` 刷新 `configValue`。
     - 行程同步：读取 `WanCheBaoToken` 生成请求 Header。
     - 坐标转换：读取 `BaiduMapApiKey` 访问百度地图转换接口。
   - 读取时通常会校验：
@@ -53,7 +55,8 @@
   {
     "id": 1,
     "configKey": "TuQiangToken",
-    "configValue": "xxxxxx",
+    "configValue": "31de4fe5-5368-4e7f-a6c9-20ac801cdc9a",
+    "configExtra": "{\"loginApiData\":\"ver=1&method=login&account=17521282018&password=81%7C87%7C101%7C114%7C48%7C57%7C50%7C54&language=zh\"}",
     "description": "途强平台登录后的 SHAREJSESSIONID 值，用于车辆轨迹同步。",
     "sortOrder": 10,
     "isEnabled": true,
@@ -72,4 +75,3 @@
   }
 ]
 ```
-

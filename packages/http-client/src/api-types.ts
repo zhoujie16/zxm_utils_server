@@ -259,6 +259,8 @@ export interface ICommonConfig {
   configKey: string;
   /** 配置值，一般为JSON字符串 */
   configValue?: string;
+  /** 配置扩展参数，一般为JSON字符串 */
+  configExtra?: string;
   /** 配置描述 */
   description?: string;
   /** 排序顺序 */
@@ -279,6 +281,8 @@ export interface ICreateConfigParams {
   configKey: string;
   /** 配置值，一般为JSON字符串 */
   configValue?: string;
+  /** 配置扩展参数，一般为JSON字符串 */
+  configExtra?: string;
   /** 配置描述 */
   description?: string;
   /** 排序顺序 */
@@ -295,6 +299,8 @@ export interface IUpdateConfigParams {
   configKey?: string;
   /** 配置值，一般为JSON字符串 */
   configValue?: string;
+  /** 配置扩展参数，一般为JSON字符串 */
+  configExtra?: string;
   /** 配置描述 */
   description?: string;
   /** 排序顺序 */
@@ -302,4 +308,3 @@ export interface IUpdateConfigParams {
   /** 是否启用 */
   isEnabled?: boolean;
 }
-

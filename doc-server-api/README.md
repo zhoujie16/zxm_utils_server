@@ -14,6 +14,7 @@
   - [根据配置键获取配置](./common-config/get-by-key.md) - `GET /api/common-config/key/:configKey`
   - [创建新配置](./common-config/create.md) - `POST /api/common-config`
   - [更新配置](./common-config/update.md) - `PATCH /api/common-config/:id`
+  - [刷新配置 Token](./common-config/refresh-token.md) - `POST /api/common-config/:configKey/refresh-token`
   - [删除配置](./common-config/delete.md) - `DELETE /api/common-config/:id`
 - [车辆行程模块](./vehicle-trip/) - 车辆行程数据管理
   - [查询车辆行程数据列表](./vehicle-trip/list.md) - `GET /api/vehicle-trip`
