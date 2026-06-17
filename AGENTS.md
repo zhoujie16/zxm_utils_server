@@ -4,16 +4,16 @@
 
 ## 项目结构与模块组织
 
-本仓库是 Yarn workspaces monorepo。前端应用位于 `apps/admin`（Umi/Max 管理端）和 `apps/client`（Vite React 移动端）。后端服务位于 `apps/server-go`（Go + Gin API）。共享 TypeScript 包位于 `packages/http-client` 和 `packages/shared-components`。接口与数据库文档分别维护在 `doc-server-api`、`doc-server-db`。
+本仓库是 Yarn workspaces monorepo。前端应用位于 `apps/admin`（Umi/Max 管理端）和 `apps/client`（Vite React 移动端）。后端服务位于 `apps/server`（Go + Gin API）。共享 TypeScript 包位于 `packages/http-client` 和 `packages/shared-components`。接口与数据库文档分别维护在 `doc-server-api`、`doc-server-db`。
 
-前端 workspace 的源码主要在 `src` 目录。Go 服务入口是 `apps/server-go/cmd/server/main.go`，业务逻辑在 `internal/service`，HTTP handler 在 `internal/http/handler`，模型在 `internal/model`。
+前端 workspace 的源码主要在 `src` 目录。Go 服务入口是 `apps/server/cmd/server/main.go`，业务逻辑在 `internal/service`，HTTP handler 在 `internal/http/handler`，模型在 `internal/model`。
 
 主要业务模块：
 
-- 车辆轨迹管理：`apps/server-go/internal/service/vehicle_track_service.go`、`apps/server-go/internal/http/handler/vehicle_track_handler.go`、`apps/admin/src/pages/vehicle-track/`
-- 车辆行程管理：`apps/server-go/internal/service/vehicle_trip_service.go`、`apps/server-go/internal/http/handler/vehicle_trip_handler.go`、`apps/admin/src/pages/vehicle-trip/`
-- 通用配置管理：`apps/server-go/internal/service/common_config_service.go`、`apps/server-go/internal/http/handler/common_config_handler.go`、`apps/admin/src/pages/common-config/`
-- 用户认证系统：`apps/server-go/internal/service/auth_service.go`、`apps/server-go/internal/http/handler/auth_handler.go`、`apps/admin/src/pages/login/`
+- 车辆轨迹管理：`apps/server/internal/service/vehicle_track_service.go`、`apps/server/internal/http/handler/vehicle_track_handler.go`、`apps/admin/src/pages/vehicle-track/`
+- 车辆行程管理：`apps/server/internal/service/vehicle_trip_service.go`、`apps/server/internal/http/handler/vehicle_trip_handler.go`、`apps/admin/src/pages/vehicle-trip/`
+- 通用配置管理：`apps/server/internal/service/common_config_service.go`、`apps/server/internal/http/handler/common_config_handler.go`、`apps/admin/src/pages/common-config/`
+- 用户认证系统：`apps/server/internal/service/auth_service.go`、`apps/server/internal/http/handler/auth_handler.go`、`apps/admin/src/pages/login/`
 
 ## 构建、测试与开发命令
 
@@ -24,11 +24,10 @@
 - `yarn dev:admin`：启动管理端，默认端口 `8008`。
 - `yarn dev:client`：启动 Vite 移动端。
 - `yarn dev:server`：本地运行 Go 服务。
-- `yarn dev:server-go`：本地运行 Go 服务。
 - `yarn build`：构建管理端、移动端并交叉编译 Go 服务。
 - `yarn client:build`、`yarn admin:build`：构建单个前端 workspace。
-- `yarn server:build`、`yarn server-go:build`：交叉编译 Go 二进制到 `apps/server-go/dist`。
-- `cd apps/server-go && go test ./...`：运行 Go 测试。
+- `yarn server:build`：交叉编译 Go 二进制到 `apps/server/dist`。
+- `cd apps/server && go test ./...`：运行 Go 测试。
 - `yarn format`：格式化前端与文档。
 
 ## 代码风格与命名规范
@@ -88,7 +87,7 @@ Go 代码使用 `gofmt` 格式化；包名保持简短小写。新增代码应�
 
 ## 测试规范
 
-每次修改完成后不要自动启动项目、开发服务或测试命令；仅在用户明确要求时运行。需要验证时，先说明建议执行的命令与原因，等待用户确认。Go 后端常用测试命令为 `cd apps/server-go && go test ./...`。前端测试覆盖较少，UI 改动可按需通过 lint/build 和手动验证。
+每次修改完成后不要自动启动项目、开发服务或测试命令；仅在用户明确要求时运行。需要验证时，先说明建议执行的命令与原因，等待用户确认。Go 后端常用测试命令为 `cd apps/server && go test ./...`。前端测试覆盖较少，UI 改动可按需通过 lint/build 和手动验证。
 
 ## 提交与 PR 规范
 
@@ -100,4 +99,4 @@ PR 应包含简短说明、影响的 app/package、已运行的测试命令。�
 
 不要提交密钥、本地数据库文件或构建产物。接口变更同步更新 `doc-server-api`，数据库变更同步更新 `doc-server-db`。环境相关服务配置应放在配置文件或环境变量中，不要硬编码到共享包。
 
-Go 服务配置文件：`apps/server-go/config/config.yaml`。常用环境变量包括 `PORT`、`API_PREFIX`、`CORS_ORIGIN`、`JWT_SECRET`、`JWT_EXPIRES_IN`、`ADMIN_USERNAME`、`ADMIN_PASSWORD`、`SQLITE_DATABASE`、`SQLITE_SYNCHRONIZE`、`SQLITE_LOGGING`。
+Go 服务配置文件：`apps/server/config/config.yaml`。常用环境变量包括 `PORT`、`API_PREFIX`、`CORS_ORIGIN`、`JWT_SECRET`、`JWT_EXPIRES_IN`、`ADMIN_USERNAME`、`ADMIN_PASSWORD`、`SQLITE_DATABASE`、`SQLITE_SYNCHRONIZE`、`SQLITE_LOGGING`。

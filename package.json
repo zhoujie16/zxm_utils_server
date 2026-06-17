@@ -9,15 +9,13 @@
   ],
   "packageManager": "yarn@1.22.22",
   "scripts": {
-    "build": "yarn workspace admin build && yarn workspace client build && yarn server-go:build",
+    "build": "yarn workspace admin build && yarn workspace client build && yarn server:build",
     "dev": "concurrently \"yarn dev:server\" \"yarn dev:admin\" \"yarn dev:client\"",
     "dev:admin": "yarn workspace admin dev",
-    "dev:server": "yarn dev:server-go",
-    "dev:server-go": "cd apps/server-go && go run ./cmd/server/main.go",
+    "dev:server": "cd apps/server && go run ./cmd/server/main.go",
     "dev:client": "yarn workspace client dev",
     "admin:build": "yarn workspace admin build",
-    "server:build": "yarn server-go:build",
-    "server-go:build": "cd apps/server-go && mkdir -p dist && GOOS=linux GOARCH=amd64 go build -o dist/server-go-linux-amd64 ./cmd/server && GOOS=windows GOARCH=amd64 go build -o dist/server-go-windows-amd64.exe ./cmd/server && cd dist && zip server-go-linux-amd64.zip server-go-linux-amd64 && zip server-go-windows-amd64.zip server-go-windows-amd64.exe && cd ..",
+    "server:build": "cd apps/server && mkdir -p dist && GOOS=linux GOARCH=amd64 go build -o dist/server-linux-amd64 ./cmd/server && GOOS=windows GOARCH=amd64 go build -o dist/server-windows-amd64.exe ./cmd/server && cd dist && zip server-linux-amd64.zip server-linux-amd64 && zip server-windows-amd64.zip server-windows-amd64.exe && cd ..",
     "client:build": "yarn workspace client build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "install:all": "yarn install"

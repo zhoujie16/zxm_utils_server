@@ -9,7 +9,7 @@ zxm-toolkit-admin/
 ├── apps/
 │   ├── admin/          # 前端管理后台 (UmiJS + React + Ant Design)
 │   ├── client/         # 前端客户端应用 (Vite + React + React Vant)
-│   └── server-go/      # 后端 API 服务 (Go + Gin + SQLite)
+│   └── server/         # 后端 API 服务 (Go + Gin + SQLite)
 ├── doc-server-api/     # API 接口文档
 ├── doc-server-db/      # 数据库结构文档
 ├── packages/           # 共享 TypeScript 包
@@ -58,7 +58,7 @@ yarn install
 
 ### 配置后端
 
-Go 服务配置文件位于 `apps/server-go/config/config.yaml`，也支持通过环境变量覆盖端口、数据库、JWT、管理员账号等配置。
+Go 服务配置文件位于 `apps/server/config/config.yaml`，也支持通过环境变量覆盖端口、数据库、JWT、管理员账号等配置。
 
 ### 启动项目
 
@@ -76,7 +76,7 @@ yarn dev:server
 也可以直接运行 Go 服务：
 
 ```bash
-cd apps/server-go
+cd apps/server
 go run ./cmd/server/main.go
 ```
 
@@ -96,11 +96,11 @@ go run ./cmd/server/main.go
 
 基于 Vite 和 React Vant 构建的客户端应用。
 
-### 后端 `apps/server-go`
+### 后端 `apps/server`
 
 基于 Go + Gin 构建的 RESTful API 服务，提供登录认证、车辆轨迹、车辆行程、公共配置和 Demo 等业务能力。
 
-详细文档请查看 [apps/server-go/README.md](./apps/server-go/README.md)。
+详细文档请查看 [apps/server/README.md](./apps/server/README.md)。
 
 ### API 文档
 
@@ -117,11 +117,9 @@ go run ./cmd/server/main.go
 | `yarn dev:admin` | 启动管理后台开发服务器 |
 | `yarn dev:client` | 启动客户端应用开发服务器 |
 | `yarn dev:server` | 启动 Go 后端服务 |
-| `yarn dev:server-go` | 启动 Go 后端服务 |
 | `yarn admin:build` | 构建管理后台生产版本 |
 | `yarn client:build` | 构建客户端应用生产版本 |
 | `yarn server:build` | 构建 Go 后端二进制 |
-| `yarn server-go:build` | 交叉编译 Go 后端二进制 |
 | `yarn build` | 构建所有应用 |
 | `yarn format` | 格式化前端和文档文件 |
 
