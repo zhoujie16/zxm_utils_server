@@ -1,6 +1,5 @@
 /**
  * @fileoverview API 相关类型定义
- * @author Claude
  * @created 2024-01-01
  */
 

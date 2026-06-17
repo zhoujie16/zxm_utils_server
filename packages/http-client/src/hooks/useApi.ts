@@ -1,6 +1,5 @@
 /**
  * @fileoverview 通用的 useSWR Hook
- * @author Claude
  * @created 2024-01-01
  */
 

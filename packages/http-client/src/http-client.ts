@@ -1,6 +1,5 @@
 /**
  * @fileoverview HTTP 客户端核心实现
- * @author Claude
  * @created 2024-01-01
  */
 

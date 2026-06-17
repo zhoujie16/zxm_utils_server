@@ -1,6 +1,5 @@
 /**
  * @fileoverview 地图边界适配组件
- * @author Claude
  * @created 2024-01-01
  */
 

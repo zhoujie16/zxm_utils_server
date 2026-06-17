@@ -1,6 +1,5 @@
 /**
  * @fileoverview 车辆行程服务 API
- * @author Claude
  * @created 2024-01-01
  */
 

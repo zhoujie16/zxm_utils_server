@@ -1,6 +1,5 @@
 /**
  * @fileoverview 公共配置列表 Hook
- * @author Claude
  * @created 2024-01-01
  */
 

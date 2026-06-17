@@ -1,6 +1,5 @@
 /**
  * @fileoverview 调试配置，控制全局日志输出开关
- * @author Claude
  * @created 2024-01-01
  */
 

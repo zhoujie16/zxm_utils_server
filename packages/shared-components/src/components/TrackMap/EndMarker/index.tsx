@@ -1,6 +1,5 @@
 /**
  * @fileoverview 终点标记组件
- * @author Claude
  * @created 2024-01-01
  */
 

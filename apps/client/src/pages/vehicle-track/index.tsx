@@ -1,6 +1,5 @@
 /**
  * @fileoverview 车辆轨迹页面
- * @author Claude
  * @created 2024-01-01
  */
 

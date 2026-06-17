@@ -1,6 +1,5 @@
 /**
  * @fileoverview 车辆轨迹列表 Hook
- * @author Claude
  * @created 2024-01-01
  */
 

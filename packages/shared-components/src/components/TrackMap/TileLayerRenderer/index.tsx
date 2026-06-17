@@ -1,6 +1,5 @@
 /**
  * @fileoverview 瓦片层渲染器组件
- * @author Claude
  * @created 2024-01-01
  */
 

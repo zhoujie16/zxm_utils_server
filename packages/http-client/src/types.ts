@@ -1,6 +1,5 @@
 /**
  * @fileoverview HTTP 客户端类型定义
- * @author Claude
  * @created 2024-01-01
  */
 

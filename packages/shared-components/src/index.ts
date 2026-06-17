@@ -1,6 +1,5 @@
 /**
  * @fileoverview 共享组件包入口文件
- * @author Claude
  * @created 2024-01-01
  */
 

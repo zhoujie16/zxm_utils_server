@@ -1,6 +1,5 @@
 /**
  * @fileoverview 应用常量定义
- * @author Claude
  * @created 2024-01-01
  */
 

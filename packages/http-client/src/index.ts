@@ -1,6 +1,5 @@
 /**
  * @fileoverview HTTP 客户端主入口文件
- * @author Claude
  * @created 2024-01-01
  */
 

@@ -1,6 +1,5 @@
 /**
  * @fileoverview 时间范围选择弹窗组件
- * @author Claude
  * @created 2024-01-01
  */
 

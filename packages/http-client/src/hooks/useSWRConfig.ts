@@ -1,6 +1,5 @@
 /**
  * @fileoverview SWR 全局配置
- * @author Claude
  * @created 2024-01-01
  */
 

@@ -1,6 +1,5 @@
 /**
  * @fileoverview 轨迹线组件
- * @author Claude
  * @created 2024-01-01
  */
 

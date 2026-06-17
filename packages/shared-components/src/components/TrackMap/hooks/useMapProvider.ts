@@ -1,6 +1,5 @@
 /**
  * @fileoverview 地图提供商状态管理 Hook
- * @author Claude
  * @created 2024-01-01
  */
 

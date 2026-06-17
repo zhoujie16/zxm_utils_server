@@ -1,6 +1,5 @@
 /**
  * @fileoverview Vite 构建配置，启用 React 插件和 Less 预处理
- * @author Claude
  * @created 2024-01-01
  */
 import { defineConfig } from 'vite';

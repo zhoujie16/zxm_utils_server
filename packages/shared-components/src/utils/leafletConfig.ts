@@ -1,6 +1,5 @@
 /**
  * @fileoverview Leaflet 地图配置
- * @author Claude
  * @created 2024-01-01
  */
 

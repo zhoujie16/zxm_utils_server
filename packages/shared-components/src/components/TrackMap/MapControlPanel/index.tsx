@@ -1,6 +1,5 @@
 /**
  * @fileoverview 地图控制面板组件
- * @author Claude
  * @created 2024-01-01
  */
 

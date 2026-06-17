@@ -1,6 +1,5 @@
 /**
  * @fileoverview 车辆轨迹工具函数
- * @author Claude
  * @created 2024-01-01
  */
 

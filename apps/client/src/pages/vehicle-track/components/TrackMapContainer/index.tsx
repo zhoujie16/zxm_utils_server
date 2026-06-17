@@ -1,6 +1,5 @@
 /**
  * @fileoverview 轨迹地图容器组件
- * @author Claude
  * @created 2024-01-01
  */
 

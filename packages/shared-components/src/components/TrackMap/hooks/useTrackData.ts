@@ -1,6 +1,5 @@
 /**
  * @fileoverview 轨迹数据处理 Hook
- * @author Claude
  * @created 2024-01-01
  */
 

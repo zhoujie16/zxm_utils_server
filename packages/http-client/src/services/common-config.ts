@@ -1,6 +1,5 @@
 /**
  * @fileoverview 公共配置服务 API
- * @author Claude
  * @created 2024-01-01
  */
 

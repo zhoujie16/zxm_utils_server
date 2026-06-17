@@ -1,6 +1,5 @@
 /**
  * @fileoverview 车辆行程页面
- * @author Claude
  * @created 2024-01-01
  */
 

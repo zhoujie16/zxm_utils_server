@@ -1,6 +1,5 @@
 /**
  * @fileoverview 高德地图瓦片层组件
- * @author Claude
  * @created 2024-01-01
  */
 

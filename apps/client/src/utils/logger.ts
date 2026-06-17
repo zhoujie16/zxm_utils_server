@@ -1,6 +1,5 @@
 /**
  * @fileoverview 统一日志工具，受全局调试配置控制
- * @author Claude
  * @created 2024-01-01
  */
 

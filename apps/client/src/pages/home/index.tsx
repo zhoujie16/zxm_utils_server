@@ -1,6 +1,5 @@
 /**
  * @fileoverview 首页
- * @author Claude
  * @created 2024-01-01
  */
 
